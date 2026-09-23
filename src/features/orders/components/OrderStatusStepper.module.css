@@ -1,0 +1,9 @@
+.stepper { display: flex; align-items: center; gap: 0; margin: 14px 0 2px; }
+.step { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step + .step { margin-left: 4px; }
+.line { height: 2px; background: var(--line-soft); border-radius: 2px; }
+.lbl { font-size: 10.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.done .line { background: var(--steel); }
+.done .lbl { color: var(--text-2); }
+.now .line { background: var(--brass); }
+.now .lbl { color: var(--brass); font-weight: 500; }

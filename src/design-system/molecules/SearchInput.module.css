@@ -1,0 +1,15 @@
+.search {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surface-lo); border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm); padding: 5px 9px; width: 230px;
+}
+.search:focus-within { border-color: var(--line); }
+.search input {
+  background: none; border: 0; outline: 0; color: var(--text);
+  font: inherit; font-size: 12.5px; width: 100%;
+}
+.search input::placeholder { color: var(--text-3); }
+
+@media (max-width: 980px) {
+  .search { width: 100%; order: 3; }
+}

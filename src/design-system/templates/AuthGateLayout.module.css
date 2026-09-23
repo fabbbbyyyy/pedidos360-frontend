@@ -1,0 +1,7 @@
+.gate { height: 100%; display: grid; place-items: center; padding: 32px; background: var(--bg); }
+.card { width: 100%; max-width: 340px; }
+.logo { margin-bottom: 22px; }
+.card h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: -0.025em; }
+.lead { margin: 0 0 26px; font-size: 13px; color: var(--text-3); line-height: 1.6; }
+.foot { margin-top: 18px; font-size: 11px; color: var(--text-3); line-height: 1.6; }
+.foot code { font-family: var(--mono); font-size: 10.5px; color: var(--text-2); }

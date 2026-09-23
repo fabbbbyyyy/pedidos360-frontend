@@ -1,0 +1,5 @@
+.mark { flex: none; border-radius: var(--r-sm); background: var(--brass); position: relative; }
+.mark::after {
+  content: ''; position: absolute; inset: 6px 6px auto 6px; height: 2px;
+  background: #0e1416; box-shadow: 0 4px 0 #0e1416;
+}

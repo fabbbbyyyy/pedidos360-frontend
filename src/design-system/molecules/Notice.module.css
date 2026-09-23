@@ -1,0 +1,7 @@
+.note {
+  padding: 9px 11px; border-radius: var(--r-sm);
+  background: var(--surface); border-left: 2px solid var(--line);
+  font-size: 11.5px; color: var(--text-2); line-height: 1.55;
+}
+.warning { border-left-color: var(--brass); }
+.error { border-left-color: var(--brick); color: #ce8781; }

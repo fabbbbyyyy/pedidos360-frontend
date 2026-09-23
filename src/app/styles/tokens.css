@@ -1,0 +1,33 @@
+:root {
+  --bg: #0e1416;
+  --rail: #121a1d;
+  --surface: #161f23;
+  --surface-hi: #1c272c;
+  --surface-lo: #101819;
+  --line: #253238;
+  --line-soft: #1b252a;
+
+  --text: #e2e8e9;
+  --text-2: #a3b2b7;
+  --text-3: #6d8088;
+
+  --brass: #c7903c;
+  --brass-dim: #8a6427;
+  --steel: #6fa3c4;
+  --peri: #8e9bd4;
+  --green: #63a177;
+  --brick: #c06a63;
+
+  --r: 4px;
+  --r-sm: 3px;
+
+  --font: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --rail-w: 216px;
+  --panel-w: 400px;
+}
+
+@media (max-width: 1180px) {
+  :root { --panel-w: 340px; }
+}

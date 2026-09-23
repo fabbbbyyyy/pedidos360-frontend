@@ -1,0 +1,11 @@
+.view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.notice { padding: 10px 20px 0; }
+.body { flex: 1; min-height: 0; display: flex; }
+.col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.scroll { flex: 1; min-height: 0; overflow: auto; }
+
+@media (max-width: 980px) {
+  .view { min-height: auto; }
+  .body { flex-direction: column; flex: none; }
+  .scroll { max-height: 60vh; }
+}

@@ -1,0 +1,10 @@
+.control {
+  width: 100%; background: var(--surface-lo); border: 1px solid var(--line);
+  border-radius: var(--r-sm); padding: 6px 9px; color: var(--text);
+  font: inherit; font-size: 12.5px;
+}
+.control::placeholder { color: var(--text-3); }
+.control:focus-visible { outline: 0; border-color: var(--steel); }
+.control:disabled { opacity: 0.6; cursor: not-allowed; }
+.invalid { border-color: var(--brick); }
+textarea.control { resize: vertical; min-height: 64px; line-height: 1.5; }
