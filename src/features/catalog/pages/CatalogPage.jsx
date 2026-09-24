@@ -3,7 +3,7 @@ import { useSession } from '@/core/auth/SessionProvider';
 import { useCart } from '@/core/cart/CartProvider';
 import { Button, Chip, IconGrid, IconList, IconPlus, IconRefresh } from '@/design-system/atoms';
 import { FilterChips, Notice, SearchInput } from '@/design-system/molecules';
-import { Topbar } from '@/design-system/organisms';
+import { ConfirmDialog, Topbar } from '@/design-system/organisms';
 import { CenteredMessage, PageLayout } from '@/design-system/templates';
 import { formatRelativeDate } from '@/shared/utils/format';
 import { getStockLevel } from '../constants/stock';
@@ -31,6 +31,7 @@ export default function CatalogPage() {
   const [selectedId, setSelectedId] = useState(null);
   const [mode, setMode] = useState('view'); // 'view' | 'create' | 'edit'
   const [actionError, setActionError] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   const products = useMemo(
     () => [...(productsQuery.data ?? [])].sort((a, b) => a.name.localeCompare(b.name, 'es')),
@@ -98,14 +99,20 @@ export default function CatalogPage() {
     }
   }
 
-  async function handleDelete(product) {
-    if (!window.confirm(`¿Eliminar «${product.name}»? Esta acción no se puede deshacer.`)) return;
+  function handleDelete(product) {
+    setProductToDelete(product);
+  }
+
+  async function confirmDelete() {
+    if (!productToDelete) return;
     setActionError(null);
     try {
-      await deleteProduct.mutateAsync(product.id);
+      await deleteProduct.mutateAsync(productToDelete.id);
       setSelectedId(null);
     } catch (error) {
       setActionError(error.message);
+    } finally {
+      setProductToDelete(null);
     }
   }
 
@@ -162,6 +169,17 @@ export default function CatalogPage() {
           error={mode === 'create' ? createProduct.error?.message || uploadProductImage.error?.message : updateProduct.error?.message}
           onSubmit={mode === 'create' ? handleCreate : handleUpdate}
           onClose={() => setMode('view')}
+        />
+      )}
+      {productToDelete && (
+        <ConfirmDialog
+          title={`¿Eliminar «${productToDelete.name}»?`}
+          message="Esta acción no se puede deshacer."
+          confirmLabel="Eliminar producto"
+          danger
+          busy={deleteProduct.isPending}
+          onClose={() => setProductToDelete(null)}
+          onConfirm={confirmDelete}
         />
       )}
     </>
