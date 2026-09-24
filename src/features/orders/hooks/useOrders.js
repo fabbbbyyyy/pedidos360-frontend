@@ -47,6 +47,9 @@ export function useDeleteOrder() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.remove,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ORDERS_KEY }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ORDERS_KEY });
+      queryClient.invalidateQueries({ queryKey: ['catalog'] });
+    },
   });
 }

@@ -1,2 +1,8 @@
-.state { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; white-space: nowrap; }
+.state { display: inline-flex; align-items: center; gap: 7px; width: max-content; padding: 5px 9px; border: 1px solid var(--status-border); border-radius: 999px; background: var(--status-bg); color: var(--status-color); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.tone-pending { --status-color: #17604f; --status-dot: #17604f; --status-bg: #e1f5ec; --status-border: #8acbad; }
+.tone-confirmed { --status-color: #176b7a; --status-dot: #176b7a; --status-bg: #e4f3f5; --status-border: #91cbd2; }
+.tone-preparing { --status-color: #514e9a; --status-dot: #514e9a; --status-bg: #eeecfb; --status-border: #b9b4e4; }
+.tone-ready { --status-color: #176b7a; --status-dot: #176b7a; --status-bg: #e4f3f5; --status-border: #91cbd2; }
+.tone-delivered { --status-color: #287548; --status-dot: #287548; --status-bg: #e6f5eb; --status-border: #9bcfad; }
+.tone-cancelled { --status-color: #a43737; --status-dot: #a43737; --status-bg: #fff0ef; --status-border: #e5aaa7; }
 .struck { text-decoration: line-through; text-decoration-color: var(--line); }

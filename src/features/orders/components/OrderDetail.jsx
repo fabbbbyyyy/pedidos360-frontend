@@ -1,5 +1,5 @@
 import { Button } from '@/design-system/atoms';
-import { FactsList, Notice } from '@/design-system/molecules';
+import { FactsList } from '@/design-system/molecules';
 import { DetailPanel, PanelDivider, PanelSectionTitle } from '@/design-system/organisms';
 import { formatCLP, formatFullDate } from '@/shared/utils/format';
 import { ADVANCE_LABEL } from '../constants/orderStatus';
@@ -7,9 +7,9 @@ import OrderStatusBadge from './OrderStatusBadge';
 import OrderStatusStepper from './OrderStatusStepper';
 import styles from './OrderDetail.module.css';
 
-// actions: { next, canCancel, canDelete } (ver utils/orderActions.js)
-export default function OrderDetail({ order, productsById, actions, busy, onClose, onAdvance, onCancel, onDelete }) {
-  const hasFooter = actions.next || actions.canCancel || actions.canDelete;
+// actions: { next, canCancel } (ver utils/orderActions.js)
+export default function OrderDetail({ order, productsById, actions, busy, onClose, onAdvance, onCancel }) {
+  const hasFooter = actions.next || actions.canCancel;
 
   return (
     <DetailPanel
@@ -32,9 +32,6 @@ export default function OrderDetail({ order, productsById, actions, busy, onClos
             )}
             {actions.canCancel && (
               <Button variant="danger" disabled={busy} onClick={() => onCancel(order)}>Cancelar</Button>
-            )}
-            {actions.canDelete && (
-              <Button variant="danger" disabled={busy} onClick={() => onDelete(order)}>Eliminar</Button>
             )}
           </>
         )
@@ -70,10 +67,6 @@ export default function OrderDetail({ order, productsById, actions, busy, onClos
         <b>{formatCLP(order.total)}</b>
       </div>
 
-      <Notice className={styles.note}>
-        El stock se descontó automáticamente al crear el pedido. Si lo cancelas o lo eliminas, el backend
-        todavía no lo repone.
-      </Notice>
     </DetailPanel>
   );
 }

@@ -1,0 +1,10 @@
+.backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: rgba(16, 35, 31, .34); backdrop-filter: blur(4px); animation: fadeIn .16s ease-out; }
+.dialog { width: min(420px, 100%); overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: 0 24px 70px rgba(23, 56, 46, .22); animation: riseIn .2s ease-out; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; padding: 22px 22px 0; }
+.icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--accent-soft); color: var(--accent-ink); font-size: 20px; font-weight: 800; }
+.content { padding: 14px 24px 24px; }
+.content h2 { color: var(--text); font-size: 20px; letter-spacing: -.02em; }
+.content p { margin-top: 9px; color: var(--text-2); font-size: 14px; line-height: 1.55; }
+.footer { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 22px 20px; border-top: 1px solid var(--line-soft); background: var(--surface-lo); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes riseIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }

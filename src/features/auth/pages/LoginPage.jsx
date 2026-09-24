@@ -23,13 +23,13 @@ export default function LoginPage() {
     setError(null);
     instance
       .loginRedirect({ ...loginRequest, redirectStartPage: window.location.origin + from })
-      .catch((e) => setError(e.message));
+      .catch(() => setError('No pudimos iniciar sesión. Inténtalo nuevamente o contacta a soporte.'));
   };
 
   return (
     <AuthGateLayout
       title="Pedidos360"
-      lead="Entra con tu cuenta corporativa. El panel usa el mismo inicio de sesión que el correo, así que no hay contraseña aparte."
+      lead="Accede con tu cuenta corporativa para consultar el catálogo, preparar pedidos y hacer seguimiento de tus compras."
       action={
         <>
           <Button variant="primary" block onClick={handleLogin} disabled={inProgress !== InteractionStatus.None}>
@@ -40,8 +40,7 @@ export default function LoginPage() {
       }
       footer={
         <>
-          ¿No puedes entrar? Escribe a soporte interno. Tu cuenta necesita los permisos <code>orders.read</code> y{' '}
-          <code>catalog.read</code> para ver pedidos y catálogo.
+          ¿No puedes entrar? Contacta a soporte interno para revisar el acceso de tu cuenta.
         </>
       }
     />

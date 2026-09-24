@@ -1,26 +1,21 @@
-import { CellId, CellMeta, CellMoney, CellStack, DataTable } from '@/design-system/organisms';
+import { EmptyState } from '@/design-system/molecules';
 import { formatCLP, formatRelativeDate } from '@/shared/utils/format';
 import OrderStatusBadge from './OrderStatusBadge';
-
-const columns = [
-  { key: 'id', header: 'Pedido', width: 96, render: (o) => <CellId>{o.id.slice(0, 8)}</CellId> },
-  { key: 'customer', header: 'Cliente', render: (o) => <CellStack title={o.customerId} meta={o.createdBy} /> },
-  { key: 'items', header: 'Ítems', width: 70, align: 'right', render: (o) => <span className="num">{o.items?.length ?? 0}</span> },
-  { key: 'total', header: 'Total', width: 110, align: 'right', render: (o) => <CellMoney>{formatCLP(o.total)}</CellMoney> },
-  { key: 'status', header: 'Estado', width: 130, render: (o) => <OrderStatusBadge status={o.status} /> },
-  { key: 'createdAt', header: 'Creado', width: 120, align: 'right', render: (o) => <CellMeta>{formatRelativeDate(o.createdAt)}</CellMeta> },
-];
+import styles from './OrderList.module.css';
 
 export default function OrderList({ orders, selectedId, onSelect }) {
-  return (
-    <DataTable
-      columns={columns}
-      rows={orders}
-      getRowId={(order) => order.id}
-      selectedId={selectedId}
-      onSelect={onSelect}
-      emptyTitle="No hay pedidos que coincidan"
-      emptyHint="Prueba con otro término de búsqueda o cambia el filtro de estado."
-    />
-  );
+  if (orders.length === 0) return <div className={styles.empty}><EmptyState title="No hay pedidos que coincidan"><p>Prueba con otro término de búsqueda o cambia el filtro de estado.</p></EmptyState></div>;
+
+  return <div className={styles.list}>
+    {orders.map((order) => (
+      <button type="button" className={styles.row} key={order.id} aria-pressed={order.id === selectedId} onClick={() => onSelect(order.id)}>
+        <div className={styles.order}><span className={styles.id}>{order.id}</span><span className={styles.customer}>{order.customerId}</span></div>
+        <div><span className={styles.label}>Productos</span><span className={styles.value}>{order.items?.length ?? 0}</span></div>
+        <div><span className={styles.label}>Total</span><span className={styles.total}>{formatCLP(order.total)}</span></div>
+        <div><span className={styles.label}>Estado</span><OrderStatusBadge status={order.status} /></div>
+        <div className={styles.date}>{formatRelativeDate(order.createdAt)}</div>
+        <span className={styles.arrow} aria-hidden="true">›</span>
+      </button>
+    ))}
+  </div>;
 }

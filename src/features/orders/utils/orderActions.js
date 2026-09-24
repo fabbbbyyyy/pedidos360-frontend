@@ -2,20 +2,16 @@ import { ROLES } from '@/core/auth/roles';
 import { ORDER_STATUS, TRANSITIONS } from '../constants/orderStatus';
 
 // Qué acciones ofrece la UI para un pedido según su estado y el rol del usuario.
-//  - admin / operador: avanzan el pedido y pueden cancelarlo.
-//  - cliente: solo puede cancelar.
-// El backend permite updateStatus a los 3 roles; esta restricción es de UX.
 export function getOrderActions(status, { can, hasRole }) {
   const targets = TRANSITIONS[status] ?? [];
-  const none = { next: null, canCancel: false, canDelete: false };
-  const canDelete = can('orders', 'delete');
+  const none = { next: null, canCancel: false };
+  const canCancel = can('orders', 'delete') && targets.includes(ORDER_STATUS.CANCELLED);
 
-  if (!can('orders', 'updateStatus')) return { ...none, canDelete };
+  if (!can('orders', 'updateStatus')) return { ...none, canCancel };
 
   const privileged = hasRole(ROLES.ADMIN, ROLES.OPERADOR);
   return {
     next: privileged ? targets.find((t) => t !== ORDER_STATUS.CANCELLED) ?? null : null,
-    canCancel: targets.includes(ORDER_STATUS.CANCELLED),
-    canDelete,
+    canCancel,
   };
 }

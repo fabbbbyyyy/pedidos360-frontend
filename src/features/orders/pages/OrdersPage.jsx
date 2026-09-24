@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useSession } from '@/core/auth/SessionProvider';
 import { Button, IconRefresh } from '@/design-system/atoms';
-import { FilterChips, Notice, SearchInput } from '@/design-system/molecules';
-import { Topbar } from '@/design-system/organisms';
+import { FilterChips, SearchInput } from '@/design-system/molecules';
+import { ConfirmDialog, Topbar } from '@/design-system/organisms';
 import { CenteredMessage, PageLayout } from '@/design-system/templates';
 import { formatRelativeDate } from '@/shared/utils/format';
 import { useProducts } from '@/features/catalog/hooks/useCatalog';
@@ -28,6 +28,7 @@ export default function OrdersPage() {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   const [actionError, setActionError] = useState(null);
+  const [confirmation, setConfirmation] = useState(null);
 
   const products = productsQuery.data ?? [];
   const productsById = useMemo(() => Object.fromEntries(products.map((p) => [p.id, p])), [products]);
@@ -75,20 +76,23 @@ export default function OrdersPage() {
   const handleAdvance = (order, status) => run(() => updateStatus.mutateAsync({ id: order.id, status, expectedVersion: order.version }));
 
   const handleCancel = (order) => {
-    if (!window.confirm('¿Cancelar este pedido? El stock no se repone automáticamente.')) return;
-    return run(async () => {
-      await deleteOrder.mutateAsync(order.id);
-      setSelectedId(null);
+    setConfirmation({
+      title: '¿Cancelar este pedido?',
+      message: 'El pedido quedará cancelado y las unidades volverán a estar disponibles en el inventario.',
+      confirmLabel: 'Cancelar pedido',
+      order,
     });
   };
 
-  const handleDelete = (order) => {
-    if (!window.confirm('¿Eliminar este pedido? Esta acción no se puede deshacer.')) return;
-    return run(async () => {
+  async function confirmCancel() {
+    const order = confirmation?.order;
+    if (!order) return;
+    await run(async () => {
       await deleteOrder.mutateAsync(order.id);
       setSelectedId(null);
     });
-  };
+    setConfirmation(null);
+  }
 
   const updatedAt = ordersQuery.dataUpdatedAt ? new Date(ordersQuery.dataUpdatedAt).toISOString() : null;
 
@@ -103,7 +107,6 @@ export default function OrdersPage() {
         </Topbar>
       }
       filters={<FilterChips label="Filtrar por estado" options={filterOptions} value={filter} onChange={setFilter} />}
-      notice={actionError && <Notice variant="error">{actionError}</Notice>}
     >
       {ordersQuery.isLoading ? (
         <CenteredMessage title="Cargando pedidos…" />
@@ -113,9 +116,10 @@ export default function OrdersPage() {
           <Button onClick={() => ordersQuery.refetch()}>Reintentar</Button>
         </CenteredMessage>
       ) : (
-        <OrderList orders={filtered} selectedId={selectedId} onSelect={(id) => setSelectedId(id)} />
+        <OrderList orders={filtered} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setActionError(null); }} />
       )}
-      {selected && <OrderModal order={selected} productsById={productsById} actions={getOrderActions(selected.status, session)} busy={busy} onClose={() => setSelectedId(null)} onAdvance={handleAdvance} onCancel={handleCancel} onDelete={handleDelete} />}
+      {selected && <OrderModal order={selected} productsById={productsById} actions={getOrderActions(selected.status, session)} busy={busy} error={actionError} onClose={() => { setSelectedId(null); setActionError(null); }} onAdvance={handleAdvance} onCancel={handleCancel} />}
+      {confirmation && <ConfirmDialog title={confirmation.title} message={confirmation.message} confirmLabel={confirmation.confirmLabel} danger busy={deleteOrder.isPending} onClose={() => setConfirmation(null)} onConfirm={confirmCancel} />}
     </PageLayout>
   );
 }

@@ -94,7 +94,7 @@ export default function CartDrawer() {
                   {createOrder.isPending ? 'Creando pedido…' : 'Confirmar pedido'}
                 </Button>
                 {createOrder.isError && <small className={styles.error}>{createOrder.error.message}</small>}
-                <small>El precio y el stock se validan nuevamente al confirmar.</small>
+                <small>Confirmaremos el precio y la disponibilidad al procesar tu pedido.</small>
               </footer>
             )}
           </aside>

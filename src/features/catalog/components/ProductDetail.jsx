@@ -2,7 +2,7 @@ import { Button } from '@/design-system/atoms';
 import { FactsList, Notice } from '@/design-system/molecules';
 import { DetailPanel, PanelDivider, PanelSectionTitle } from '@/design-system/organisms';
 import { formatCLP, formatFullDate } from '@/shared/utils/format';
-import { LOW_STOCK_THRESHOLD, getStockLevel } from '../constants/stock';
+import { getStockLevel } from '../constants/stock';
 import styles from './ProductDetail.module.css';
 
 const STOCK_COLOR = { out: 'var(--brick)', low: 'var(--brass)', ok: undefined };
@@ -41,12 +41,12 @@ export default function ProductDetail({ product, canEdit, canDelete, busy, onClo
 
       {level === 'out' && (
         <Notice variant="error" className={styles.note}>
-          Sin stock. Los pedidos nuevos que incluyan este producto van a fallar hasta reponerlo.
+          Producto agotado. Estará disponible nuevamente cuando se reponga el inventario.
         </Notice>
       )}
       {level === 'low' && (
         <Notice variant="warning" className={styles.note}>
-          Quedan {product.stock} unidades, por debajo del umbral de {LOW_STOCK_THRESHOLD}. Conviene reponer pronto.
+          Disponibilidad limitada: quedan {product.stock} unidades.
         </Notice>
       )}
     </DetailPanel>

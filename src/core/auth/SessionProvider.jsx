@@ -59,13 +59,13 @@ export function SessionProvider({ children }) {
   }, [account, state.roles]);
 
   if (!account || state.status === 'loading') {
-    return <CenteredMessage title="Verificando permisos…" />;
+    return <CenteredMessage title="Preparando tu acceso…" />;
   }
 
   if (state.status === 'error') {
     return (
-      <CenteredMessage title="No se pudo obtener tu sesión de API">
-        <p>Revisa que tu cuenta tenga consentimiento para los permisos de la API y vuelve a intentarlo.</p>
+      <CenteredMessage title="No pudimos verificar tu acceso">
+        <p>Tu sesión no pudo validarse. Cierra sesión e inténtalo nuevamente o contacta a soporte.</p>
         <Button
           onClick={() => instance.logoutRedirect({ account, postLogoutRedirectUri: env.azureRedirectUri })}
         >

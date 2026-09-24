@@ -7,7 +7,7 @@ import styles from './OrderStatusBadge.module.css';
 export default function OrderStatusBadge({ status }) {
   const tone = STATUS_TONE[status] ?? STATUS_TONE.PENDING;
   return (
-    <span className={styles.state} style={{ color: tone.text }}>
+    <span className={cx(styles.state, styles[`tone-${status.toLowerCase()}`])}>
       <Dot color={tone.dot} />
       <span className={cx(status === ORDER_STATUS.CANCELLED && styles.struck)}>
         {STATUS_LABEL[status] ?? status}

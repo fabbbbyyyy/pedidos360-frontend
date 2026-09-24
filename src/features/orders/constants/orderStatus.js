@@ -3,7 +3,8 @@
 export const ORDER_STATUS = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
-  SHIPPED: 'SHIPPED',
+  PREPARING: 'PREPARING',
+  READY: 'READY',
   DELIVERED: 'DELIVERED',
   CANCELLED: 'CANCELLED',
 };
@@ -14,23 +15,26 @@ export const ORDER_STATUSES = Object.values(ORDER_STATUS);
 export const STATUS_SEQUENCE = [
   ORDER_STATUS.PENDING,
   ORDER_STATUS.CONFIRMED,
-  ORDER_STATUS.SHIPPED,
+  ORDER_STATUS.PREPARING,
+  ORDER_STATUS.READY,
   ORDER_STATUS.DELIVERED,
 ];
 
 export const STATUS_LABEL = {
   PENDING: 'Pendiente',
   CONFIRMED: 'Confirmado',
-  SHIPPED: 'Enviado',
+  PREPARING: 'En preparación',
+  READY: 'Listo para entregar',
   DELIVERED: 'Entregado',
   CANCELLED: 'Cancelado',
 };
 
 // Color del punto y del texto de cada estado.
 export const STATUS_TONE = {
-  PENDING: { dot: 'var(--brass)', text: 'var(--brass)' },
+  PENDING: { dot: 'var(--accent-ink)', text: 'var(--accent-ink)' },
   CONFIRMED: { dot: 'var(--steel)', text: '#8db8d3' },
-  SHIPPED: { dot: 'var(--peri)', text: '#a5b0dd' },
+  PREPARING: { dot: 'var(--peri)', text: '#514e9a' },
+  READY: { dot: 'var(--steel)', text: '#176b7a' },
   DELIVERED: { dot: 'var(--green)', text: '#80b491' },
   CANCELLED: { dot: 'var(--brick)', text: '#ce8781' },
 };
@@ -38,8 +42,9 @@ export const STATUS_TONE = {
 // Transiciones permitidas. Regla de negocio: no se puede enviar sin confirmar.
 export const TRANSITIONS = {
   PENDING: [ORDER_STATUS.CONFIRMED, ORDER_STATUS.CANCELLED],
-  CONFIRMED: [ORDER_STATUS.SHIPPED, ORDER_STATUS.CANCELLED],
-  SHIPPED: [ORDER_STATUS.DELIVERED],
+  CONFIRMED: [ORDER_STATUS.PREPARING, ORDER_STATUS.CANCELLED],
+  PREPARING: [ORDER_STATUS.READY],
+  READY: [ORDER_STATUS.DELIVERED],
   DELIVERED: [],
   CANCELLED: [],
 };
@@ -47,6 +52,7 @@ export const TRANSITIONS = {
 // Texto del botón principal según el estado al que se avanza.
 export const ADVANCE_LABEL = {
   CONFIRMED: 'Confirmar pedido',
-  SHIPPED: 'Marcar como enviado',
+  PREPARING: 'Iniciar preparación',
+  READY: 'Marcar como listo',
   DELIVERED: 'Marcar como entregado',
 };
