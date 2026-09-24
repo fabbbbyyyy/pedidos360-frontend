@@ -30,6 +30,10 @@ export function CartProvider({ children }) {
     setItems((current) => current.filter((item) => item.product.id !== productId));
   }
 
+  function clearCart() {
+    setItems([]);
+  }
+
   const summary = useMemo(() => ({
     totalItems: items.reduce((total, item) => total + item.quantity, 0),
     totalPrice: items.reduce((total, item) => total + item.product.price * item.quantity, 0),
@@ -42,6 +46,7 @@ export function CartProvider({ children }) {
     addItem,
     updateQuantity,
     removeItem,
+    clearCart,
     openCart: () => setIsOpen(true),
     closeCart: () => setIsOpen(false),
   };

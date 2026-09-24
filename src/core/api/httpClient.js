@@ -29,7 +29,7 @@ function extractMessage(json) {
 }
 
 export function createHttpClient({ baseUrl, getToken }) {
-  async function request(method, path, body) {
+  async function request(method, path, body, options = {}) {
     const token = await getToken();
     const hasBody = body !== undefined;
 
@@ -39,6 +39,7 @@ export function createHttpClient({ baseUrl, getToken }) {
         method,
         headers: {
           Authorization: `Bearer ${token}`,
+          ...options.headers,
           ...(hasBody && { 'Content-Type': 'application/json' }),
         },
         body: hasBody ? JSON.stringify(body) : undefined,
@@ -62,8 +63,8 @@ export function createHttpClient({ baseUrl, getToken }) {
 
   return {
     get: (path) => request('GET', path),
-    post: (path, body = {}) => request('POST', path, body),
-    put: (path, body = {}) => request('PUT', path, body),
+    post: (path, body = {}, options) => request('POST', path, body, options),
+    put: (path, body = {}, options) => request('PUT', path, body, options),
     delete: (path) => request('DELETE', path),
   };
 }

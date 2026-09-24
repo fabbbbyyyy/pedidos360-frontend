@@ -72,11 +72,14 @@ export default function OrdersPage() {
     }
   }
 
-  const handleAdvance = (order, status) => run(() => updateStatus.mutateAsync({ id: order.id, status }));
+  const handleAdvance = (order, status) => run(() => updateStatus.mutateAsync({ id: order.id, status, expectedVersion: order.version }));
 
   const handleCancel = (order) => {
     if (!window.confirm('¿Cancelar este pedido? El stock no se repone automáticamente.')) return;
-    return run(() => updateStatus.mutateAsync({ id: order.id, status: ORDER_STATUS.CANCELLED }));
+    return run(async () => {
+      await deleteOrder.mutateAsync(order.id);
+      setSelectedId(null);
+    });
   };
 
   const handleDelete = (order) => {

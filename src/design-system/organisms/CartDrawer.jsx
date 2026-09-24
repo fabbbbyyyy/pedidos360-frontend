@@ -1,10 +1,40 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Button, IconCart, IconClose, IconMinus, IconPlus, IconTrash } from '../atoms';
 import { useCart } from '@/core/cart/CartProvider';
+import { useCreateOrder } from '@/features/orders/hooks/useOrders';
 import { formatCLP } from '@/shared/utils/format';
 import styles from './CartDrawer.module.css';
 
 export default function CartDrawer() {
-  const { items, totalItems, totalPrice, isOpen, openCart, closeCart, updateQuantity, removeItem } = useCart();
+  const { items, totalItems, totalPrice, isOpen, openCart, closeCart, updateQuantity, removeItem, clearCart } = useCart();
+  const createOrder = useCreateOrder();
+  const [idempotencyKey, setIdempotencyKey] = useState(null);
+  const [successOrderId, setSuccessOrderId] = useState(null);
+  const cartFingerprint = useMemo(
+    () => items.map(({ product, quantity }) => `${product.id}:${quantity}`).join('|'),
+    [items],
+  );
+
+  useEffect(() => {
+    setIdempotencyKey(null);
+    if (cartFingerprint) setSuccessOrderId(null);
+  }, [cartFingerprint]);
+
+  async function handleCheckout() {
+    const key = idempotencyKey ?? crypto.randomUUID();
+    if (!idempotencyKey) setIdempotencyKey(key);
+
+    try {
+      const order = await createOrder.mutateAsync({
+        idempotencyKey: key,
+        items: items.map(({ product, quantity }) => ({ productId: product.id, quantity })),
+      });
+      clearCart();
+      setSuccessOrderId(order?.id ?? 'creado');
+    } catch {
+      // El error se mantiene en el drawer y la clave se conserva para reintentar.
+    }
+  }
 
   return (
     <>
@@ -26,6 +56,7 @@ export default function CartDrawer() {
             </header>
 
             <div className={styles.body}>
+              {successOrderId && <div className={styles.success}>Pedido {successOrderId} creado correctamente.</div>}
               {items.length === 0 ? (
                 <div className={styles.empty}>
                   <div className={styles.emptyIcon}><IconCart /></div>
@@ -59,8 +90,11 @@ export default function CartDrawer() {
             {items.length > 0 && (
               <footer className={styles.footer}>
                 <div><span>Total estimado</span><strong>{formatCLP(totalPrice)}</strong></div>
-                <Button variant="primary" block disabled>Continuar con el pedido</Button>
-                <small>La confirmación del pedido estará disponible cuando se conecte el backend.</small>
+                <Button variant="primary" block onClick={handleCheckout} disabled={createOrder.isPending}>
+                  {createOrder.isPending ? 'Creando pedido…' : 'Confirmar pedido'}
+                </Button>
+                {createOrder.isError && <small className={styles.error}>{createOrder.error.message}</small>}
+                <small>El precio y el stock se validan nuevamente al confirmar.</small>
               </footer>
             )}
           </aside>

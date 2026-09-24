@@ -21,6 +21,7 @@
 .eyebrow { color: var(--accent-ink); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .header h2 { margin-top: 4px; font-size: 30px; letter-spacing: -.03em; }
 .body { flex: 1; overflow: auto; padding: 22px 28px; }
+.success { margin-bottom: 16px; padding: 12px 14px; border: 1px solid #a8ddc3; border-radius: var(--r); background: var(--accent-soft); color: var(--accent-ink); font-size: 13px; font-weight: 600; }
 .items { display: grid; gap: 12px; }
 .item { padding: 16px; border: 1px solid var(--line-soft); border-radius: var(--r); background: var(--surface-lo); }
 .itemInfo h3 { font-size: 16px; }
@@ -44,6 +45,7 @@
 .footer span { color: var(--text-2); font-size: 14px; }
 .footer strong { color: var(--accent-ink); font-family: var(--mono); font-size: 20px; }
 .footer small { color: var(--text-3); font-size: 11px; line-height: 1.4; }
+.footer .error { color: var(--brick); }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @media (max-width: 600px) {

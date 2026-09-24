@@ -12,7 +12,13 @@ function useOrdersApi() {
 
 export function useOrders() {
   const api = useOrdersApi();
-  return useQuery({ queryKey: ORDERS_KEY, queryFn: api.list });
+  return useQuery({
+    queryKey: ORDERS_KEY,
+    queryFn: async () => {
+      const response = await api.list();
+      return response?.items ?? response ?? [];
+    },
+  });
 }
 
 export function useCreateOrder() {
@@ -31,7 +37,7 @@ export function useUpdateOrderStatus() {
   const api = useOrdersApi();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }) => api.updateStatus(id, status),
+    mutationFn: ({ id, status, expectedVersion }) => api.updateStatus(id, status, expectedVersion),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ORDERS_KEY }),
   });
 }
