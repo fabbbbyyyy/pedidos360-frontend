@@ -1,13 +1,13 @@
-.list { display: grid; gap: 10px; padding: 20px 30px 32px; }
-.row { display: grid; grid-template-columns: minmax(220px, 1.6fr) minmax(110px, .8fr) minmax(110px, .7fr) minmax(130px, .8fr) auto; align-items: center; gap: 20px; width: 100%; padding: 16px 18px; text-align: left; background: var(--surface-lo); border: 1px solid var(--line-soft); border-radius: var(--r); color: var(--text); transition: transform .15s, border-color .15s, background .15s; }
+.list { display: grid; gap: 8px; padding: 20px 30px 32px; }
+.row { display: grid; grid-template-columns: minmax(220px, 1.6fr) minmax(100px, .7fr) minmax(100px, .6fr) minmax(120px, .7fr) minmax(90px, .55fr) 20px; align-items: center; gap: 16px; width: 100%; padding: 11px 18px; text-align: left; background: var(--surface-lo); border: 1px solid var(--line-soft); border-radius: var(--r); color: var(--text); transition: transform .15s, border-color .15s, background .15s; }
 .row:hover { background: var(--surface); border-color: var(--line); transform: translateX(3px); }
 .row[aria-pressed='true'] { border-color: var(--brass-dim); background: var(--surface); box-shadow: inset 3px 0 var(--brass); }
-.product { display: flex; align-items: center; gap: 14px; min-width: 0; }
-.thumbnail { width: 58px; height: 58px; flex: none; overflow: hidden; border-radius: 9px; }
+.product { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.thumbnail { width: 46px; height: 46px; flex: none; overflow: hidden; border-radius: 8px; }
 .productCopy { min-width: 0; }
-.name { overflow: hidden; font-size: 16px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
-.description { overflow: hidden; margin-top: 5px; color: var(--text-3); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.label { display: block; margin-bottom: 5px; color: var(--text-3); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.name { overflow: hidden; font-size: 15px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.description { overflow: hidden; margin-top: 3px; color: var(--text-3); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.label { display: block; margin-bottom: 3px; color: var(--text-3); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .value { color: var(--text-2); font-size: 13px; }
 .price { color: var(--accent-ink); font-family: var(--mono); font-size: 14px; font-weight: 700; }
 .date { color: var(--text-3); font-size: 12px; }
@@ -15,8 +15,8 @@
 .row:hover .arrow { color: var(--brass); transform: translateX(3px); }
 .empty { padding: 40px 20px; }
 @media (max-width: 780px) {
-  .list { padding: 16px; }
-  .row { grid-template-columns: 1fr auto; gap: 12px; padding: 15px; }
+  .list { padding: 16px; gap: 8px; }
+  .row { grid-template-columns: 1fr auto; gap: 12px; padding: 13px 15px; }
   .product { grid-column: 1 / -1; }
   .date { display: none; }
 }

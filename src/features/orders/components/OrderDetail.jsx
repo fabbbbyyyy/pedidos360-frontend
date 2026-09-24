@@ -55,10 +55,14 @@ export default function OrderDetail({ order, productsById, user, actions, busy, 
         {order.items?.map((item) => (
           <div className={styles.item} key={item.productId}>
             <span className={styles.q}>{item.quantity} ×</span>
-            <span className={styles.n}>
-              {productsById[item.productId]?.name ?? 'Producto no disponible'}
-              <small>{item.productId}</small>
-            </span>
+            {productsById[item.productId] ? (
+              <span className={styles.n}>{productsById[item.productId].name}</span>
+            ) : (
+              <span className={styles.n}>
+                Producto no disponible
+                <small>ID: {item.productId}</small>
+              </span>
+            )}
             <span className={styles.p}>{formatCLP(item.unitPrice)}</span>
           </div>
         ))}

@@ -18,7 +18,10 @@ export function ProductCard({ product, selected, onSelect }) {
       <p className={styles.desc}>{product.description}</p>
       <div className={styles.bottom}>
         <span className={styles.price}>{formatCLP(product.price)}</span>
-        <StockMeter stock={product.stock} />
+        <div className={styles.stockBlock}>
+          <span className={styles.stockLabel}>Disponibilidad</span>
+          <StockMeter stock={product.stock} />
+        </div>
       </div>
     </button>
   );

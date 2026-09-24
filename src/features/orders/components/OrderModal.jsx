@@ -1,9 +1,9 @@
 import { Button, IconClose } from '@/design-system/atoms';
 import { FactsList } from '@/design-system/molecules';
 import { formatCLP, formatFullDate } from '@/shared/utils/format';
-import { getOrderCustomerName } from '../utils/orderDisplay';
+import { getOrderCustomerName, describeHistoryEntry } from '../utils/orderDisplay';
 import { useDialogA11y } from '@/shared/hooks/useDialogA11y';
-import { ADVANCE_LABEL, STATUS_LABEL } from '../constants/orderStatus';
+import { ADVANCE_LABEL } from '../constants/orderStatus';
 import OrderStatusBadge from './OrderStatusBadge';
 import OrderStatusStepper from './OrderStatusStepper';
 import styles from './OrderModal.module.css';
@@ -27,10 +27,10 @@ export default function OrderModal({ order, productsById, user, actions, busy, e
               <h3 id="order-history-title">Historial del pedido</h3>
               <ol>
                 {order.history.map((entry, index) => (
-                  <li key={`${entry.changedAt ?? entry.createdAt ?? index}-${entry.status}`}>
-                    <strong>{STATUS_LABEL[entry.status] ?? entry.status}</strong>
-                    <span>{formatFullDate(entry.changedAt ?? entry.createdAt)}</span>
-                    {entry.changedBy && <small>por {typeof entry.changedBy === 'string' ? entry.changedBy : entry.changedBy.name ?? entry.changedBy.id}</small>}
+                  <li key={`${entry.changedAt}-${index}`}>
+                    <strong>{describeHistoryEntry(entry)}</strong>
+                    <span>{formatFullDate(entry.changedAt)}</span>
+                    {entry.changedBy && <small>por {entry.changedBy.name ?? entry.changedBy.id}</small>}
                   </li>
                 ))}
               </ol>
@@ -42,7 +42,14 @@ export default function OrderModal({ order, productsById, user, actions, busy, e
               {order.items?.map((item) => (
                 <div className={styles.item} key={item.productId}>
                   <span className={styles.q}>{item.quantity} x</span>
-                  <span className={styles.name}>{productsById[item.productId]?.name ?? 'Producto no disponible'}<small>{item.productId}</small></span>
+                  {productsById[item.productId] ? (
+                    <span className={styles.name}>{productsById[item.productId].name}</span>
+                  ) : (
+                    <span className={styles.name}>
+                      Producto no disponible
+                      <small>ID: {item.productId}</small>
+                    </span>
+                  )}
                   <strong>{formatCLP(item.unitPrice * item.quantity)}</strong>
                 </div>
               ))}
