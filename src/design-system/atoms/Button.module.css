@@ -9,7 +9,7 @@
 
 .primary { background: var(--brass); border-color: var(--brass); color: #14100a; font-weight: 600; }
 .primary svg { color: inherit; }
-.primary:hover:not(:disabled) { background: #d79d45; border-color: #d79d45; color: #14100a; }
+.primary:hover:not(:disabled) { background: var(--brass); border-color: var(--brass); color: #14100a; }
 
 .ghost { background: none; border-color: transparent; color: var(--text-2); }
 .ghost:hover:not(:disabled) { background: var(--surface); color: var(--text); }

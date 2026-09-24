@@ -1,6 +1,6 @@
 .filters {
   display: flex; align-items: center; gap: 2px;
-  padding: 9px 20px; border-bottom: 1px solid var(--line-soft);
+  padding: 14px 30px; border-bottom: 1px solid var(--line-soft);
   overflow-x: auto; scrollbar-width: none;
 }
 .filters::-webkit-scrollbar { display: none; }

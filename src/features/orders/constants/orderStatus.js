@@ -28,7 +28,7 @@ export const STATUS_LABEL = {
 
 // Color del punto y del texto de cada estado.
 export const STATUS_TONE = {
-  PENDING: { dot: 'var(--brass)', text: '#d9a758' },
+  PENDING: { dot: 'var(--brass)', text: 'var(--brass)' },
   CONFIRMED: { dot: 'var(--steel)', text: '#8db8d3' },
   SHIPPED: { dot: 'var(--peri)', text: '#a5b0dd' },
   DELIVERED: { dot: 'var(--green)', text: '#80b491' },

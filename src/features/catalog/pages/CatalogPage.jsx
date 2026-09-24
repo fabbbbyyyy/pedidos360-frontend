@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react';
 import { useSession } from '@/core/auth/SessionProvider';
+import { useCart } from '@/core/cart/CartProvider';
 import { Button, Chip, IconGrid, IconList, IconPlus, IconRefresh } from '@/design-system/atoms';
 import { FilterChips, Notice, SearchInput } from '@/design-system/molecules';
-import { PanelPlaceholder, Topbar } from '@/design-system/organisms';
+import { Topbar } from '@/design-system/organisms';
 import { CenteredMessage, PageLayout } from '@/design-system/templates';
 import { formatRelativeDate } from '@/shared/utils/format';
 import { getStockLevel } from '../constants/stock';
 import { useCreateProduct, useDeleteProduct, useProducts, useUpdateProduct } from '../hooks/useCatalog';
-import ProductDetail from '../components/ProductDetail';
 import ProductForm from '../components/ProductForm';
+import ProductModal from '../components/ProductModal';
 import ProductGrid from '../components/ProductCard';
 import ProductList from '../components/ProductList';
 
@@ -17,14 +18,15 @@ const LOW = 'LOW';
 
 export default function CatalogPage() {
   const { can } = useSession();
+  const { addItem } = useCart();
   const productsQuery = useProducts();
   const createProduct = useCreateProduct();
-  const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
+  const updateProduct = useUpdateProduct();
 
   const [category, setCategory] = useState(ALL);
   const [query, setQuery] = useState('');
-  const [view, setView] = useState('list'); // 'list' | 'grid'
+  const [view, setView] = useState('grid'); // 'list' | 'grid'
   const [selectedId, setSelectedId] = useState(null);
   const [mode, setMode] = useState('view'); // 'view' | 'create' | 'edit'
   const [actionError, setActionError] = useState(null);
@@ -47,8 +49,6 @@ export default function CatalogPage() {
   }, [products, category, query]);
 
   const selected = filtered.find((p) => p.id === selectedId) ?? null;
-  const busy = updateProduct.isPending || deleteProduct.isPending;
-
   const filterOptions = [
     { key: ALL, label: 'Todas', count: products.length },
     ...categories.map((c) => ({ key: c, label: c, count: products.filter((p) => p.category === c).length })),
@@ -64,7 +64,6 @@ export default function CatalogPage() {
     updateProduct.reset();
     setMode('edit');
   }
-
   async function handleCreate(payload) {
     try {
       const created = await createProduct.mutateAsync(payload);
@@ -117,57 +116,53 @@ export default function CatalogPage() {
         onCancel={() => setMode('view')}
       />
     );
-  } else if (selected) {
-    panel = (
-      <ProductDetail
-        product={selected}
-        canEdit={can('catalog', 'update')}
-        canDelete={can('catalog', 'delete')}
-        busy={busy}
-        onClose={() => setSelectedId(null)}
-        onEdit={openEdit}
-        onDelete={handleDelete}
-      />
-    );
   } else {
-    panel = (
-      <PanelPlaceholder title="Sin producto abierto" subtitle="Elige un producto para ver el detalle" emptyTitle="Nada seleccionado">
-        <p>Al elegir un producto verás su precio, stock y descripción.</p>
-        {lowCount > 0 && <Button onClick={() => setCategory(LOW)}>Ver productos con stock bajo</Button>}
-      </PanelPlaceholder>
-    );
+    panel = null;
   }
 
   const Body = view === 'grid' ? ProductGrid : ProductList;
   const updatedAt = productsQuery.dataUpdatedAt ? new Date(productsQuery.dataUpdatedAt).toISOString() : null;
 
   return (
-    <PageLayout
-      header={
-        <Topbar title="Catálogo" subtitle={`${products.length} productos · ${lowCount} con stock bajo${updatedAt ? ` · actualizado ${formatRelativeDate(updatedAt)}` : ''}`}>
-          <SearchInput placeholder="Buscar producto" value={query} onChange={setQuery} />
-          <div role="group" aria-label="Vista">
-            <Chip pressed={view === 'list'} onClick={() => setView('list')}><IconList /> Lista</Chip>
-            <Chip pressed={view === 'grid'} onClick={() => setView('grid')}><IconGrid /> Grilla</Chip>
-          </div>
-          <Button onClick={() => productsQuery.refetch()} disabled={productsQuery.isFetching} aria-label="Actualizar"><IconRefresh /></Button>
-          {can('catalog', 'create') && <Button variant="primary" onClick={openCreate}><IconPlus /> Nuevo producto</Button>}
-        </Topbar>
-      }
-      filters={<FilterChips label="Filtrar por categoría" options={filterOptions} value={category} onChange={setCategory} />}
-      notice={actionError && <Notice variant="error">{actionError}</Notice>}
-      panel={panel}
-    >
-      {productsQuery.isLoading ? (
-        <CenteredMessage title="Cargando catálogo…" />
-      ) : productsQuery.isError ? (
-        <CenteredMessage title="No se pudo cargar el catálogo">
-          <p>{productsQuery.error.message}</p>
-          <Button onClick={() => productsQuery.refetch()}>Reintentar</Button>
-        </CenteredMessage>
-      ) : (
-        <Body products={filtered} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setMode('view'); }} />
+    <>
+      <PageLayout
+        header={
+          <Topbar title="Catálogo" subtitle={`${products.length} productos · ${lowCount} con stock bajo${updatedAt ? ` · actualizado ${formatRelativeDate(updatedAt)}` : ''}`}>
+            <SearchInput placeholder="Buscar producto" value={query} onChange={setQuery} />
+            <div role="group" aria-label="Vista">
+              <Chip pressed={view === 'list'} onClick={() => setView('list')}><IconList /> Lista</Chip>
+              <Chip pressed={view === 'grid'} onClick={() => setView('grid')}><IconGrid /> Grilla</Chip>
+            </div>
+            <Button onClick={() => productsQuery.refetch()} disabled={productsQuery.isFetching} aria-label="Actualizar"><IconRefresh /></Button>
+            {can('catalog', 'create') && <Button variant="primary" onClick={openCreate}><IconPlus /> Nuevo producto</Button>}
+          </Topbar>
+        }
+        filters={<FilterChips label="Filtrar por categoría" options={filterOptions} value={category} onChange={setCategory} />}
+        notice={actionError && <Notice variant="error">{actionError}</Notice>}
+        panel={panel}
+      >
+        {productsQuery.isLoading ? (
+          <CenteredMessage title="Cargando catálogo…" />
+        ) : productsQuery.isError ? (
+          <CenteredMessage title="No se pudo cargar el catálogo">
+            <p>{productsQuery.error.message}</p>
+            <Button onClick={() => productsQuery.refetch()}>Reintentar</Button>
+          </CenteredMessage>
+        ) : (
+          <Body products={filtered} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setMode('view'); }} />
+        )}
+      </PageLayout>
+      {selected && mode === 'view' && (
+        <ProductModal
+          product={selected}
+          canEdit={can('catalog', 'update')}
+          canDelete={can('catalog', 'delete')}
+          onClose={() => setSelectedId(null)}
+          onAdd={addItem}
+          onEdit={openEdit}
+          onDelete={handleDelete}
+        />
       )}
-    </PageLayout>
+    </>
   );
 }

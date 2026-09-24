@@ -3,26 +3,26 @@
   background: var(--rail); border-right: 1px solid var(--line-soft);
   display: flex; flex-direction: column;
 }
-.brand { display: flex; align-items: center; gap: 9px; padding: 18px 16px 20px; }
-.brand b { font-size: 14px; font-weight: 600; letter-spacing: -0.015em; }
-.brandSub { font-size: 10px; color: var(--text-3); display: block; font-weight: 400; letter-spacing: 0.01em; }
+.brand { display: flex; align-items: center; gap: 11px; padding: 24px 20px 28px; }
+.brand b { font-size: 17px; font-weight: 650; letter-spacing: -0.015em; }
+.brandSub { font-size: 12px; color: var(--text-3); display: block; font-weight: 400; letter-spacing: 0.01em; }
 
-.nav { padding: 0 8px; display: flex; flex-direction: column; gap: 1px; }
+.nav { padding: 0 12px; display: flex; flex-direction: column; gap: 4px; }
 .navItem {
   display: flex; align-items: center; gap: 10px; width: 100%;
-  padding: 7px 8px; border-radius: var(--r-sm);
-  color: var(--text-2); font-size: 13px; text-align: left; text-decoration: none;
+  padding: 12px 12px; border-radius: var(--r-sm);
+  color: var(--text-2); font-size: 15px; text-align: left; text-decoration: none;
   transition: background 0.12s, color 0.12s;
 }
 .navItem:hover { background: var(--surface); color: var(--text); }
 .navItem[aria-current='page'] { background: var(--surface-hi); color: var(--text); font-weight: 500; }
 .navItem[aria-current='page'] svg { color: var(--brass); }
 
-.foot { margin-top: auto; padding: 12px; border-top: 1px solid var(--line-soft); }
-.who { display: flex; align-items: center; gap: 9px; padding: 6px; border-radius: var(--r-sm); }
+.foot { margin-top: auto; padding: 16px; border-top: 1px solid var(--line-soft); }
+.who { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--r-sm); }
 .whoTxt { min-width: 0; flex: 1; text-align: left; }
-.whoTxt b { display: block; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.whoTxt span { display: block; font-size: 10.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.whoTxt b { display: block; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.whoTxt span { display: block; font-size: 11px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 @media (max-width: 980px) {
   .rail {

@@ -1,12 +1,12 @@
 .search {
   display: flex; align-items: center; gap: 7px;
   background: var(--surface-lo); border: 1px solid var(--line-soft);
-  border-radius: var(--r-sm); padding: 5px 9px; width: 230px;
+  border-radius: var(--r-sm); padding: 9px 12px; width: 280px;
 }
 .search:focus-within { border-color: var(--line); }
 .search input {
   background: none; border: 0; outline: 0; color: var(--text);
-  font: inherit; font-size: 12.5px; width: 100%;
+  font: inherit; font-size: 14px; width: 100%;
 }
 .search input::placeholder { color: var(--text-3); }
 

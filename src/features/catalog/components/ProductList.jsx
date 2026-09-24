@@ -1,26 +1,21 @@
-import { CellId, CellMeta, CellMoney, CellStack, DataTable } from '@/design-system/organisms';
+import { EmptyState } from '@/design-system/molecules';
 import { formatCLP, formatRelativeDate } from '@/shared/utils/format';
 import StockMeter from './StockMeter';
-
-const columns = [
-  { key: 'id', header: 'Código', width: 84, render: (p) => <CellId>{p.id.slice(0, 8)}</CellId> },
-  { key: 'name', header: 'Producto', render: (p) => <CellStack title={p.name} meta={p.description} /> },
-  { key: 'category', header: 'Categoría', width: 100, render: (p) => <CellMeta>{p.category || '—'}</CellMeta> },
-  { key: 'price', header: 'Precio', width: 100, align: 'right', render: (p) => <CellMoney>{formatCLP(p.price)}</CellMoney> },
-  { key: 'stock', header: 'Stock', width: 110, align: 'right', render: (p) => <StockMeter stock={p.stock} /> },
-  { key: 'updatedAt', header: 'Actualizado', width: 100, align: 'right', render: (p) => <CellMeta>{formatRelativeDate(p.updatedAt)}</CellMeta> },
-];
+import styles from './ProductList.module.css';
 
 export default function ProductList({ products, selectedId, onSelect }) {
-  return (
-    <DataTable
-      columns={columns}
-      rows={products}
-      getRowId={(product) => product.id}
-      selectedId={selectedId}
-      onSelect={onSelect}
-      emptyTitle="No hay productos que coincidan"
-      emptyHint="Prueba con otro término de búsqueda o cambia la categoría."
-    />
-  );
+  if (products.length === 0) return <div className={styles.empty}><EmptyState title="No hay productos que coincidan"><p>Prueba con otro término de búsqueda o cambia la categoría.</p></EmptyState></div>;
+
+  return <div className={styles.list}>
+    {products.map((product) => (
+      <button type="button" className={styles.row} key={product.id} aria-pressed={product.id === selectedId} onClick={() => onSelect(product.id)}>
+        <div className={styles.product}><div className={styles.name}>{product.name}</div><div className={styles.description}>{product.description || 'Sin descripción disponible'}</div></div>
+        <div><span className={styles.label}>Categoría</span><span className={styles.value}>{product.category || 'General'}</span></div>
+        <div><span className={styles.label}>Precio</span><span className={styles.price}>{formatCLP(product.price)}</span></div>
+        <div><span className={styles.label}>Disponibilidad</span><StockMeter stock={product.stock} /></div>
+        <div className={styles.date}>{formatRelativeDate(product.updatedAt)}</div>
+        <span className={styles.arrow} aria-hidden="true">›</span>
+      </button>
+    ))}
+  </div>;
 }

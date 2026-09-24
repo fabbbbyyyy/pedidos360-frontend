@@ -50,3 +50,6 @@ export const IconRefresh = createIcon('IconRefresh', <path d="M13 3.5V7H9.5M3 12
 export const IconLogout = createIcon('IconLogout', <path d="M6.5 2.5h-3v11h3M10 5l3 3-3 3M13 8H6.5" />);
 export const IconGrid = createIcon('IconGrid', <path d="M2.5 2.5h4.5v4.5H2.5zM9 2.5h4.5v4.5H9zM2.5 9h4.5v4.5H2.5zM9 9h4.5v4.5H9z" />);
 export const IconList = createIcon('IconList', <path d="M5.5 4h8M5.5 8h8M5.5 12h8M2.5 4h1M2.5 8h1M2.5 12h1" />);
+export const IconCart = createIcon('IconCart', <><path d="M2.5 3h1.2l1.1 7.2a1 1 0 0 0 1 .8h5.8a1 1 0 0 0 1-.8L13.5 5H4.2" /><circle cx="6.5" cy="13" r=".8" /><circle cx="11.5" cy="13" r=".8" /></>);
+export const IconMinus = createIcon('IconMinus', <path d="M3 8h10" />, 1.5);
+export const IconTrash = createIcon('IconTrash', <><path d="M3.5 4.5h9M6 4.5V3h4v1.5M5 6.5v5.5M8 6.5v5.5M11 6.5v5.5M4 4.5l.6 9h6.8l.6-9" /></>);

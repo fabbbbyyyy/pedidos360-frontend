@@ -1,36 +1,32 @@
 import { useMemo, useState } from 'react';
 import { useSession } from '@/core/auth/SessionProvider';
-import { ROLES } from '@/core/auth/roles';
-import { Button, IconPlus, IconRefresh } from '@/design-system/atoms';
+import { Button, IconRefresh } from '@/design-system/atoms';
 import { FilterChips, Notice, SearchInput } from '@/design-system/molecules';
-import { PanelPlaceholder, Topbar } from '@/design-system/organisms';
+import { Topbar } from '@/design-system/organisms';
 import { CenteredMessage, PageLayout } from '@/design-system/templates';
 import { formatRelativeDate } from '@/shared/utils/format';
 import { useProducts } from '@/features/catalog/hooks/useCatalog';
 import { ORDER_STATUS, ORDER_STATUSES, STATUS_LABEL, STATUS_TONE } from '../constants/orderStatus';
 import { getOrderActions } from '../utils/orderActions';
 import { scopeOrdersToUser, sortByNewest } from '../utils/scopeOrders';
-import { useCreateOrder, useDeleteOrder, useOrders, useUpdateOrderStatus } from '../hooks/useOrders';
-import OrderDetail from '../components/OrderDetail';
-import OrderForm from '../components/OrderForm';
+import { useDeleteOrder, useOrders, useUpdateOrderStatus } from '../hooks/useOrders';
+import OrderModal from '../components/OrderModal';
 import OrderList from '../components/OrderList';
 
 const ALL = 'ALL';
 
 export default function OrdersPage() {
   const session = useSession();
-  const { can, hasRole, user } = session;
+  const { hasRole, user } = session;
 
   const ordersQuery = useOrders();
   const productsQuery = useProducts(); // nombres de producto y alta de pedidos
-  const createOrder = useCreateOrder();
   const updateStatus = useUpdateOrderStatus();
   const deleteOrder = useDeleteOrder();
 
   const [filter, setFilter] = useState(ALL);
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(null);
-  const [creating, setCreating] = useState(false);
   const [actionError, setActionError] = useState(null);
 
   const products = productsQuery.data ?? [];
@@ -91,56 +87,6 @@ export default function OrdersPage() {
     });
   };
 
-  function openCreate() {
-    createOrder.reset();
-    setSelectedId(null);
-    setCreating(true);
-  }
-
-  async function handleCreate(payload) {
-    try {
-      const created = await createOrder.mutateAsync(payload);
-      setCreating(false);
-      setFilter(ALL);
-      setSelectedId(created?.id ?? null);
-    } catch { /* el error se muestra en el formulario */ }
-  }
-
-  let panel;
-  if (creating) {
-    const isClient = !hasRole(ROLES.ADMIN, ROLES.OPERADOR);
-    panel = (
-      <OrderForm
-        products={products}
-        customerId={isClient ? user.id : ''}
-        lockCustomer={isClient}
-        submitting={createOrder.isPending}
-        error={createOrder.error?.message}
-        onSubmit={handleCreate}
-        onCancel={() => setCreating(false)}
-      />
-    );
-  } else if (selected) {
-    panel = (
-      <OrderDetail
-        order={selected}
-        productsById={productsById}
-        actions={getOrderActions(selected.status, session)}
-        busy={busy}
-        onClose={() => setSelectedId(null)}
-        onAdvance={handleAdvance}
-        onCancel={handleCancel}
-        onDelete={handleDelete}
-      />
-    );
-  } else {
-    panel = (
-      <PanelPlaceholder title="Sin pedido abierto" subtitle="Elige una fila para ver el detalle" emptyTitle="Nada seleccionado">
-        <p>Al elegir un pedido verás sus ítems, el total y las acciones disponibles para tu rol.</p>
-      </PanelPlaceholder>
-    );
-  }
-
   const updatedAt = ordersQuery.dataUpdatedAt ? new Date(ordersQuery.dataUpdatedAt).toISOString() : null;
 
   return (
@@ -151,14 +97,10 @@ export default function OrdersPage() {
           <Button onClick={() => ordersQuery.refetch()} disabled={ordersQuery.isFetching} aria-label="Actualizar">
             <IconRefresh />
           </Button>
-          {can('orders', 'create') && (
-            <Button variant="primary" onClick={openCreate}><IconPlus /> Nuevo pedido</Button>
-          )}
         </Topbar>
       }
       filters={<FilterChips label="Filtrar por estado" options={filterOptions} value={filter} onChange={setFilter} />}
       notice={actionError && <Notice variant="error">{actionError}</Notice>}
-      panel={panel}
     >
       {ordersQuery.isLoading ? (
         <CenteredMessage title="Cargando pedidos…" />
@@ -168,8 +110,9 @@ export default function OrdersPage() {
           <Button onClick={() => ordersQuery.refetch()}>Reintentar</Button>
         </CenteredMessage>
       ) : (
-        <OrderList orders={filtered} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setCreating(false); }} />
+        <OrderList orders={filtered} selectedId={selectedId} onSelect={(id) => setSelectedId(id)} />
       )}
+      {selected && <OrderModal order={selected} productsById={productsById} actions={getOrderActions(selected.status, session)} busy={busy} onClose={() => setSelectedId(null)} onAdvance={handleAdvance} onCancel={handleCancel} onDelete={handleDelete} />}
     </PageLayout>
   );
 }

@@ -1,0 +1,23 @@
+.backdrop { position: fixed; inset: 0; z-index: 25; display: grid; place-items: center; padding: 24px; background: rgba(5, 10, 11, .68); animation: fadeIn .2s ease-out; }
+.modal { position: relative; width: min(520px, 100%); overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: 0 24px 80px rgba(0, 0, 0, .45); animation: riseIn .26s cubic-bezier(.2, .8, .2, 1); }
+.close { position: absolute; top: 18px; right: 18px; z-index: 1; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; color: var(--text-2); }
+.close:hover { background: var(--surface-hi); color: var(--text); }
+.close svg { width: 19px; height: 19px; }
+.hero { padding: 38px 76px 30px 32px; background: linear-gradient(135deg, #243b3d, var(--surface)); }
+.category { display: inline-block; padding: 5px 9px; border-radius: 999px; background: var(--brass); color: #16382e; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.hero h2 { margin-top: 10px; font-size: 32px; line-height: 1.1; letter-spacing: -.035em; }
+.hero p { margin-top: 12px; color: var(--text-2); font-size: 15px; line-height: 1.6; }
+.content { display: grid; gap: 24px; padding: 28px 32px 32px; }
+.purchase { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-top: 20px; border-top: 1px solid var(--line-soft); }
+.purchaseLabel { display: block; margin-bottom: 10px; color: var(--text-3); font-size: 12px; }
+.stepper { display: flex; align-items: center; gap: 14px; width: max-content; padding: 4px; border: 1px solid var(--line); border-radius: 999px; }
+.stepper button { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--text-2); }
+.stepper button:hover:not(:disabled) { background: var(--surface-hi); color: var(--text); }
+.stepper button:disabled { opacity: .35; cursor: not-allowed; }
+.stepper svg { width: 16px; height: 16px; }
+.stepper strong { min-width: 18px; text-align: center; font-size: 15px; }
+.total { color: var(--accent-ink); font-family: var(--mono); font-size: 20px; font-weight: 700; }
+.adminActions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 4px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes riseIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 520px) { .backdrop { padding: 14px; } .hero { padding: 32px 58px 24px 24px; } .hero h2 { font-size: 27px; } .content { padding: 24px; } }

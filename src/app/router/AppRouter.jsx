@@ -14,7 +14,7 @@ export default function AppRouter() {
       {/* Guard de AUTENTICACIÓN: todo lo de adentro exige sesión */}
       <Route element={<RequireAuth />}>
         <Route element={<ProtectedLayout />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route index element={<Navigate to="/catalog" replace />} />
 
           {/* Guard de AUTORIZACIÓN por módulo, generado desde el registro */}
           {modules.map(({ id, path, roles, Page }) => (

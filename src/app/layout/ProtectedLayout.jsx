@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useMsal } from '@azure/msal-react';
 import { env } from '@/core/config/env';
 import { useSession } from '@/core/auth/SessionProvider';
-import { Sidebar } from '@/design-system/organisms';
+import { AppHeader, CartDrawer } from '@/design-system/organisms';
 import { AppLayout, CenteredMessage } from '@/design-system/templates';
 import { modules } from '../modules';
 
@@ -16,10 +16,9 @@ export default function ProtectedLayout() {
   const logout = () => instance.logoutRedirect({ account, postLogoutRedirectUri: env.azureRedirectUri });
 
   return (
-    <AppLayout sidebar={<Sidebar items={navItems} user={user} onLogout={logout} />}>
-      <Suspense fallback={<CenteredMessage title="Cargando…" />}>
-        <Outlet />
-      </Suspense>
+    <AppLayout sidebar={<AppHeader items={navItems} user={user} onLogout={logout} />}>
+      <Suspense fallback={<CenteredMessage title="Cargando…" />}><Outlet /></Suspense>
+      <CartDrawer />
     </AppLayout>
   );
 }

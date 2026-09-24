@@ -2,6 +2,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { MsalProvider } from '@azure/msal-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { msalInstance } from '@/core/auth/msalInstance';
+import { CartProvider } from '@/core/cart/CartProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,7 +14,7 @@ export default function AppProviders({ children }) {
   return (
     <MsalProvider instance={msalInstance}>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>{children}</BrowserRouter>
+        <BrowserRouter><CartProvider>{children}</CartProvider></BrowserRouter>
       </QueryClientProvider>
     </MsalProvider>
   );
