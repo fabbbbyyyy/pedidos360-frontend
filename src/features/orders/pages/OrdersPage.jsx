@@ -8,8 +8,8 @@ import { formatRelativeDate } from '@/shared/utils/format';
 import { useProducts } from '@/features/catalog/hooks/useCatalog';
 import { ORDER_STATUS, ORDER_STATUSES, STATUS_LABEL, STATUS_TONE } from '../constants/orderStatus';
 import { getOrderActions } from '../utils/orderActions';
-import { scopeOrdersToUser, sortByNewest } from '../utils/scopeOrders';
-import { useDeleteOrder, useOrders, useUpdateOrderStatus } from '../hooks/useOrders';
+import { sortByNewest } from '../utils/scopeOrders';
+import { useDeleteOrder, useOrder, useOrders, useUpdateOrderStatus } from '../hooks/useOrders';
 import OrderModal from '../components/OrderModal';
 import OrderList from '../components/OrderList';
 
@@ -17,7 +17,7 @@ const ALL = 'ALL';
 
 export default function OrdersPage() {
   const session = useSession();
-  const { hasRole, user } = session;
+  const { user } = session;
 
   const ordersQuery = useOrders();
   const productsQuery = useProducts(); // nombres de producto y alta de pedidos
@@ -34,8 +34,8 @@ export default function OrdersPage() {
   const productsById = useMemo(() => Object.fromEntries(products.map((p) => [p.id, p])), [products]);
 
   const orders = useMemo(
-    () => sortByNewest(scopeOrdersToUser(ordersQuery.data ?? [], { user, hasRole })),
-    [ordersQuery.data, user, hasRole],
+    () => sortByNewest(ordersQuery.data ?? []),
+    [ordersQuery.data],
   );
 
   const filtered = useMemo(() => {
@@ -52,6 +52,8 @@ export default function OrdersPage() {
   }, [orders, filter, query]);
 
   const selected = filtered.find((o) => o.id === selectedId) ?? null;
+  const selectedDetailQuery = useOrder(selectedId);
+  const selectedOrder = selectedDetailQuery.data ?? selected;
   const busy = updateStatus.isPending || deleteOrder.isPending;
 
   const filterOptions = [
@@ -116,9 +118,18 @@ export default function OrdersPage() {
           <Button onClick={() => ordersQuery.refetch()}>Reintentar</Button>
         </CenteredMessage>
       ) : (
-        <OrderList orders={filtered} selectedId={selectedId} user={user} onSelect={(id) => { setSelectedId(id); setActionError(null); }} />
+        <>
+          <OrderList orders={filtered} selectedId={selectedId} user={user} onSelect={(id) => { setSelectedId(id); setActionError(null); }} />
+          {ordersQuery.hasNextPage && (
+            <div className="load-more">
+              <Button onClick={() => ordersQuery.fetchNextPage()} disabled={ordersQuery.isFetchingNextPage}>
+                {ordersQuery.isFetchingNextPage ? 'Cargando…' : 'Cargar más pedidos'}
+              </Button>
+            </div>
+          )}
+        </>
       )}
-      {selected && <OrderModal order={selected} productsById={productsById} user={user} actions={getOrderActions(selected.status, session)} busy={busy} error={actionError} onClose={() => { setSelectedId(null); setActionError(null); }} onAdvance={handleAdvance} onCancel={handleCancel} />}
+      {selectedOrder && <OrderModal order={selectedOrder} productsById={productsById} user={user} actions={getOrderActions(selectedOrder.status, session)} busy={busy || selectedDetailQuery.isFetching} error={actionError} onClose={() => { setSelectedId(null); setActionError(null); }} onAdvance={handleAdvance} onCancel={handleCancel} />}
       {confirmation && <ConfirmDialog title={confirmation.title} message={confirmation.message} confirmLabel={confirmation.confirmLabel} danger busy={deleteOrder.isPending} onClose={() => setConfirmation(null)} onConfirm={confirmCancel} />}
     </PageLayout>
   );

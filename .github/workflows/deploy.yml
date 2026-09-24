@@ -26,6 +26,9 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Ejecutar tests
+        run: npm test
+
       - name: Construir frontend
         run: npm run build
         env:

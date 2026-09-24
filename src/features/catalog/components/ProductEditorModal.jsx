@@ -1,13 +1,15 @@
 import { Button, IconClose } from '@/design-system/atoms';
+import { useDialogA11y } from '@/shared/hooks/useDialogA11y';
 import ProductForm from './ProductForm';
 import styles from './ProductEditorModal.module.css';
 
 export default function ProductEditorModal({ product, categories, submitting, error, onSubmit, onClose }) {
   const editing = Boolean(product);
+  const dialogRef = useDialogA11y({ onClose, disabled: submitting });
 
   return (
     <div className={styles.backdrop} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && !submitting && onClose()}>
-      <section className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="product-editor-title">
+      <section ref={dialogRef} tabIndex="-1" className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="product-editor-title">
         <header className={styles.header}>
           <div>
             <span className={styles.eyebrow}>{editing ? 'Administrar catálogo' : 'Nuevo producto'}</span>

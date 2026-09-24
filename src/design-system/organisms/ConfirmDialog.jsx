@@ -1,10 +1,12 @@
 import { Button, IconClose } from '../atoms';
+import { useDialogA11y } from '@/shared/hooks/useDialogA11y';
 import styles from './ConfirmDialog.module.css';
 
 export default function ConfirmDialog({ title, message, confirmLabel = 'Confirmar', danger = false, busy = false, onConfirm, onClose }) {
+  const dialogRef = useDialogA11y({ onClose, disabled: busy });
   return (
     <div className={styles.backdrop} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && !busy && onClose()}>
-      <section className={styles.dialog} role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+      <section ref={dialogRef} tabIndex="-1" className={styles.dialog} role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message">
         <header className={styles.header}>
           <div className={styles.icon}>!</div>
           <Button variant="ghost" aria-label="Cerrar" onClick={onClose} disabled={busy}><IconClose /></Button>

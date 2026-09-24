@@ -153,6 +153,7 @@ export default function CatalogPage() {
           canEdit={can('catalog', 'update')}
           canDelete={can('catalog', 'delete')}
           uploadingImage={uploadProductImage.isPending}
+          uploadProgress={uploadProductImage.progress}
           uploadError={actionError}
           onClose={() => setSelectedId(null)}
           onAdd={addItem}

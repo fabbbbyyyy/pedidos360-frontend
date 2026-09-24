@@ -10,6 +10,13 @@
 .body::-webkit-scrollbar-track { background: transparent; }
 .body::-webkit-scrollbar-thumb { border: 2px solid var(--surface); border-radius: 999px; background: var(--line); }
 .error { padding: 12px 14px; border: 1px solid #edc5c3; border-radius: var(--r); background: #fff5f4; color: var(--brick); font-size: 13px; line-height: 1.45; }
+.history { padding: 16px; border: 1px solid var(--line-soft); border-radius: var(--r); background: var(--surface-lo); }
+.history h3 { margin-bottom: 12px; color: var(--text-2); font-size: 13px; }
+.history ol { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.history li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding-left: 12px; border-left: 2px solid var(--steel); }
+.history li strong { color: var(--text); font-size: 13px; }
+.history li span, .history li small { color: var(--text-3); font-size: 11px; }
+.history li small { grid-column: 1 / -1; }
 .itemsSection { padding-top: 22px; border-top: 1px solid var(--line-soft); }
 .itemsSection h3 { margin-bottom: 12px; color: var(--text-2); font-size: 13px; }
 .items { display: grid; gap: 8px; }

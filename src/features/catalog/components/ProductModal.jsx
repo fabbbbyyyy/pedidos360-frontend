@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Button, IconCart, IconClose, IconMinus, IconPlus, ProductImage } from '@/design-system/atoms';
 import { FactsList } from '@/design-system/molecules';
 import { formatCLP } from '@/shared/utils/format';
+import { useDialogA11y } from '@/shared/hooks/useDialogA11y';
 import { getStockLevel } from '../constants/stock';
 import { validateProductImage } from '../constants/images';
 import styles from './ProductModal.module.css';
 
 const STOCK_LABEL = { out: 'Sin stock', low: 'Últimas unidades', ok: 'Disponible' };
 
-export default function ProductModal({ product, canEdit, canDelete, uploadingImage, uploadError, onClose, onAdd, onEdit, onDelete, onUploadImage }) {
+export default function ProductModal({ product, canEdit, canDelete, uploadingImage, uploadProgress, uploadError, onClose, onAdd, onEdit, onDelete, onUploadImage }) {
+  const dialogRef = useDialogA11y({ onClose, disabled: uploadingImage });
   const [quantity, setQuantity] = useState(1);
   const [imageError, setImageError] = useState(null);
   const level = getStockLevel(product.stock);
@@ -34,7 +36,7 @@ export default function ProductModal({ product, canEdit, canDelete, uploadingIma
 
   return (
     <div className={styles.backdrop} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <section className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+      <section ref={dialogRef} tabIndex="-1" className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
         <button type="button" className={styles.close} onClick={onClose} aria-label="Cerrar detalle"><IconClose /></button>
         <div className={styles.hero}>
           <ProductImage src={product.imageUrl} alt="" className={styles.heroImage} />
@@ -63,7 +65,7 @@ export default function ProductModal({ product, canEdit, canDelete, uploadingIma
             <div className={styles.adminActions}>
               {canEdit && <Button onClick={() => onEdit(product)}>Editar producto</Button>}
               {canDelete && <Button variant="danger" onClick={() => onDelete(product)}>Eliminar</Button>}
-              {canEdit && <label className={styles.uploadButton}><span>{uploadingImage ? 'Subiendo imagen…' : 'Subir imagen'}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageChange} disabled={uploadingImage} /></label>}
+              {canEdit && <label className={styles.uploadButton}><span>{uploadingImage ? `Subiendo imagen… ${uploadProgress ?? 0}%` : 'Subir imagen'}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageChange} disabled={uploadingImage} /></label>}
             </div>
           )}
           {(imageError || uploadError) && <div className={styles.uploadError} role="alert">{imageError || uploadError}</div>}

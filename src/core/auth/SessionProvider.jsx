@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { acquireApiToken } from './acquireApiToken';
 import { decodeJwt } from './jwt';
 import { PERMISSIONS } from './permissions';
 import { env } from '@/core/config/env';
+import { useCart } from '@/core/cart/CartProvider';
 import { Button } from '@/design-system/atoms';
 import { CenteredMessage } from '@/design-system/templates';
 
@@ -26,6 +28,8 @@ function buildUser(account) {
 // es exactamente el claim que después valida el backend. Es UX, no seguridad.
 export function SessionProvider({ children }) {
   const { instance, accounts } = useMsal();
+  const queryClient = useQueryClient();
+  const { clearCart } = useCart();
   const account = accounts[0] ?? instance.getActiveAccount();
   const accountId = account?.homeAccountId;
   const [state, setState] = useState({ status: 'loading', roles: [] });
@@ -49,14 +53,20 @@ export function SessionProvider({ children }) {
   const value = useMemo(() => {
     if (!account) return null;
     const hasRole = (...wanted) => wanted.some((role) => state.roles.includes(role));
+    const logout = () => {
+      clearCart();
+      queryClient.clear();
+      return instance.logoutRedirect({ account, postLogoutRedirectUri: env.azureRedirectUri });
+    };
     return {
       account,
       user: buildUser(account),
       roles: state.roles,
       hasRole,
       can: (resource, action) => hasRole(...(PERMISSIONS[resource]?.[action] ?? [])),
+      logout,
     };
-  }, [account, state.roles]);
+  }, [account, clearCart, instance, queryClient, state.roles]);
 
   if (!account || state.status === 'loading') {
     return <CenteredMessage title="Preparando tu acceso…" />;
@@ -67,7 +77,11 @@ export function SessionProvider({ children }) {
       <CenteredMessage title="No pudimos verificar tu acceso">
         <p>Tu sesión no pudo validarse. Cierra sesión e inténtalo nuevamente o contacta a soporte.</p>
         <Button
-          onClick={() => instance.logoutRedirect({ account, postLogoutRedirectUri: env.azureRedirectUri })}
+          onClick={() => {
+            clearCart();
+            queryClient.clear();
+            instance.logoutRedirect({ account, postLogoutRedirectUri: env.azureRedirectUri });
+          }}
         >
           Cerrar sesión
         </Button>

@@ -39,7 +39,7 @@ export default function OrderForm({ products, customerId: initialCustomer, lockC
       if (!product) return setValidation('Elige un producto en cada ítem.');
       if (!Number.isInteger(quantity) || quantity < 1) return setValidation('La cantidad debe ser un entero mayor a 0.');
       if (quantity > product.stock) return setValidation(`Stock insuficiente para «${product.name}» (disponible: ${product.stock}).`);
-      payloadItems.push({ productId: product.id, quantity, unitPrice: product.price });
+      payloadItems.push({ productId: product.id, quantity });
     }
     setValidation(null);
     onSubmit({ customerId: customerId.trim(), items: payloadItems });

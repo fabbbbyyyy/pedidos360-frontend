@@ -3,6 +3,7 @@ import { Button, IconCart, IconClose, IconMinus, IconPlus, IconTrash } from '../
 import { useCart } from '@/core/cart/CartProvider';
 import { useCreateOrder } from '@/features/orders/hooks/useOrders';
 import { formatCLP } from '@/shared/utils/format';
+import { useDialogA11y } from '@/shared/hooks/useDialogA11y';
 import styles from './CartDrawer.module.css';
 
 export default function CartDrawer() {
@@ -10,6 +11,7 @@ export default function CartDrawer() {
   const createOrder = useCreateOrder();
   const [idempotencyKey, setIdempotencyKey] = useState(null);
   const [successOrderId, setSuccessOrderId] = useState(null);
+  const dialogRef = useDialogA11y({ onClose: closeCart, open: isOpen, disabled: createOrder.isPending });
   const cartFingerprint = useMemo(
     () => items.map(({ product, quantity }) => `${product.id}:${quantity}`).join('|'),
     [items],
@@ -36,6 +38,12 @@ export default function CartDrawer() {
     }
   }
 
+  function getCheckoutError(error) {
+    if (error.status === 409) return `El catálogo cambió: ${error.message}`;
+    if (error.status === 0) return 'No pudimos conectar con el servidor. Revisa tu conexión e inténtalo nuevamente.';
+    return error.message;
+  }
+
   return (
     <>
       <button type="button" className={styles.fab} onClick={openCart} aria-label="Abrir carrito">
@@ -46,7 +54,7 @@ export default function CartDrawer() {
 
       {isOpen && (
         <div className={styles.layer} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && closeCart()}>
-          <aside className={styles.drawer} role="dialog" aria-modal="true" aria-labelledby="cart-title">
+          <aside ref={dialogRef} tabIndex="-1" className={styles.drawer} role="dialog" aria-modal="true" aria-labelledby="cart-title">
             <header className={styles.header}>
               <div>
                 <span className={styles.eyebrow}>Tu selección</span>
@@ -93,7 +101,7 @@ export default function CartDrawer() {
                 <Button variant="primary" block onClick={handleCheckout} disabled={createOrder.isPending}>
                   {createOrder.isPending ? 'Creando pedido…' : 'Confirmar pedido'}
                 </Button>
-                {createOrder.isError && <small className={styles.error}>{createOrder.error.message}</small>}
+                {createOrder.isError && <small className={styles.error}>{getCheckoutError(createOrder.error)}</small>}
                 <small>Confirmaremos el precio y la disponibilidad al procesar tu pedido.</small>
               </footer>
             )}
