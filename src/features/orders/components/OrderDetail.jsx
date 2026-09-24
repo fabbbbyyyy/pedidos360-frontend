@@ -2,19 +2,21 @@ import { Button } from '@/design-system/atoms';
 import { FactsList } from '@/design-system/molecules';
 import { DetailPanel, PanelDivider, PanelSectionTitle } from '@/design-system/organisms';
 import { formatCLP, formatFullDate } from '@/shared/utils/format';
+import { getOrderCustomerName } from '../utils/orderDisplay';
 import { ADVANCE_LABEL } from '../constants/orderStatus';
 import OrderStatusBadge from './OrderStatusBadge';
 import OrderStatusStepper from './OrderStatusStepper';
 import styles from './OrderDetail.module.css';
 
 // actions: { next, canCancel } (ver utils/orderActions.js)
-export default function OrderDetail({ order, productsById, actions, busy, onClose, onAdvance, onCancel }) {
+export default function OrderDetail({ order, productsById, user, actions, busy, onClose, onAdvance, onCancel }) {
   const hasFooter = actions.next || actions.canCancel;
+  const customerName = getOrderCustomerName(order, user);
 
   return (
     <DetailPanel
-      title={order.customerId}
-      subtitle={order.id}
+      title={`Cliente: ${customerName}`}
+      subtitle={`Número de orden: ${order.id}`}
       onClose={onClose}
       headContent={
         <>
@@ -39,7 +41,7 @@ export default function OrderDetail({ order, productsById, actions, busy, onClos
     >
       <FactsList
         items={[
-          { label: 'Cliente', value: order.customerId, mono: true },
+          { label: 'Cliente', value: customerName },
           { label: 'Creado por', value: order.createdBy },
           { label: 'Creado', value: formatFullDate(order.createdAt) },
           { label: 'Última actualización', value: formatFullDate(order.updatedAt) },

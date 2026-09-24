@@ -1,15 +1,16 @@
 import { EmptyState } from '@/design-system/molecules';
 import { formatCLP, formatRelativeDate } from '@/shared/utils/format';
+import { getOrderCustomerName } from '../utils/orderDisplay';
 import OrderStatusBadge from './OrderStatusBadge';
 import styles from './OrderList.module.css';
 
-export default function OrderList({ orders, selectedId, onSelect }) {
+export default function OrderList({ orders, selectedId, onSelect, user }) {
   if (orders.length === 0) return <div className={styles.empty}><EmptyState title="No hay pedidos que coincidan"><p>Prueba con otro término de búsqueda o cambia el filtro de estado.</p></EmptyState></div>;
 
   return <div className={styles.list}>
     {orders.map((order) => (
       <button type="button" className={styles.row} key={order.id} aria-pressed={order.id === selectedId} onClick={() => onSelect(order.id)}>
-        <div className={styles.order}><span className={styles.id}>{order.id}</span><span className={styles.customer}>{order.customerId}</span></div>
+        <div className={styles.order}><span className={styles.id}>Orden {order.id.slice(0, 8)}</span><span className={styles.customer}>Cliente: {getOrderCustomerName(order, user)}</span></div>
         <div><span className={styles.label}>Productos</span><span className={styles.value}>{order.items?.length ?? 0}</span></div>
         <div><span className={styles.label}>Total</span><span className={styles.total}>{formatCLP(order.total)}</span></div>
         <div><span className={styles.label}>Estado</span><OrderStatusBadge status={order.status} /></div>

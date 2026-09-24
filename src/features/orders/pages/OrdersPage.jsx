@@ -116,9 +116,9 @@ export default function OrdersPage() {
           <Button onClick={() => ordersQuery.refetch()}>Reintentar</Button>
         </CenteredMessage>
       ) : (
-        <OrderList orders={filtered} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setActionError(null); }} />
+        <OrderList orders={filtered} selectedId={selectedId} user={user} onSelect={(id) => { setSelectedId(id); setActionError(null); }} />
       )}
-      {selected && <OrderModal order={selected} productsById={productsById} actions={getOrderActions(selected.status, session)} busy={busy} error={actionError} onClose={() => { setSelectedId(null); setActionError(null); }} onAdvance={handleAdvance} onCancel={handleCancel} />}
+      {selected && <OrderModal order={selected} productsById={productsById} user={user} actions={getOrderActions(selected.status, session)} busy={busy} error={actionError} onClose={() => { setSelectedId(null); setActionError(null); }} onAdvance={handleAdvance} onCancel={handleCancel} />}
       {confirmation && <ConfirmDialog title={confirmation.title} message={confirmation.message} confirmLabel={confirmation.confirmLabel} danger busy={deleteOrder.isPending} onClose={() => setConfirmation(null)} onConfirm={confirmCancel} />}
     </PageLayout>
   );
