@@ -3,10 +3,14 @@
 .close { position: absolute; top: 18px; right: 18px; z-index: 1; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; color: var(--text-2); }
 .close:hover { background: var(--surface-hi); color: var(--text); }
 .close svg { width: 19px; height: 19px; }
-.hero { padding: 38px 76px 30px 32px; background: linear-gradient(135deg, #243b3d, var(--surface)); }
+.hero { position: relative; min-height: 245px; overflow: hidden; padding: 38px 76px 30px 32px; background: linear-gradient(135deg, #243b3d, var(--surface)); }
+.heroImage, .heroOverlay { position: absolute; inset: 0; }
+.heroImage { opacity: .9; }
+.heroOverlay { background: linear-gradient(180deg, transparent 28%, rgba(10, 31, 26, .78) 100%); }
+.heroContent { position: relative; z-index: 1; max-width: 390px; }
 .category { display: inline-block; padding: 5px 9px; border-radius: 999px; background: var(--brass); color: #16382e; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-.hero h2 { margin-top: 10px; font-size: 32px; line-height: 1.1; letter-spacing: -.035em; }
-.hero p { margin-top: 12px; color: var(--text-2); font-size: 15px; line-height: 1.6; }
+.hero h2 { margin-top: 10px; color: #fff; font-size: 32px; line-height: 1.1; letter-spacing: -.035em; }
+.hero p { margin-top: 12px; color: rgba(255, 255, 255, .84); font-size: 15px; line-height: 1.6; }
 .content { display: grid; gap: 24px; padding: 28px 32px 32px; }
 .purchase { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-top: 20px; border-top: 1px solid var(--line-soft); }
 .purchaseLabel { display: block; margin-bottom: 10px; color: var(--text-3); font-size: 12px; }
@@ -18,6 +22,10 @@
 .stepper strong { min-width: 18px; text-align: center; font-size: 15px; }
 .total { color: var(--accent-ink); font-family: var(--mono); font-size: 20px; font-weight: 700; }
 .adminActions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 4px; }
+.uploadButton { display: inline-flex; align-items: center; padding: 6px 11px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); color: var(--text-2); cursor: pointer; font-size: 12.5px; font-weight: 500; }
+.uploadButton:hover { border-color: var(--steel); color: var(--text); }
+.uploadButton input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.uploadError { padding: 10px 12px; border: 1px solid #edc5c3; border-radius: var(--r); background: #fff5f4; color: var(--brick); font-size: 12px; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes riseIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @media (max-width: 520px) { .backdrop { padding: 14px; } .hero { padding: 32px 58px 24px 24px; } .hero h2 { font-size: 27px; } .content { padding: 24px; } }

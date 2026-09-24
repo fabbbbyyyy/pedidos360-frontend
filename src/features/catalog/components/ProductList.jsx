@@ -1,4 +1,5 @@
 import { EmptyState } from '@/design-system/molecules';
+import { ProductImage } from '@/design-system/atoms';
 import { formatCLP, formatRelativeDate } from '@/shared/utils/format';
 import StockMeter from './StockMeter';
 import styles from './ProductList.module.css';
@@ -9,7 +10,7 @@ export default function ProductList({ products, selectedId, onSelect }) {
   return <div className={styles.list}>
     {products.map((product) => (
       <button type="button" className={styles.row} key={product.id} aria-pressed={product.id === selectedId} onClick={() => onSelect(product.id)}>
-        <div className={styles.product}><div className={styles.name}>{product.name}</div><div className={styles.description}>{product.description || 'Sin descripción disponible'}</div></div>
+        <div className={styles.product}><ProductImage src={product.imageUrl} alt="" className={styles.thumbnail} /><div className={styles.productCopy}><div className={styles.name}>{product.name}</div><div className={styles.description}>{product.description || 'Sin descripción disponible'}</div></div></div>
         <div><span className={styles.label}>Categoría</span><span className={styles.value}>{product.category || 'General'}</span></div>
         <div><span className={styles.label}>Precio</span><span className={styles.price}>{formatCLP(product.price)}</span></div>
         <div><span className={styles.label}>Disponibilidad</span><StockMeter stock={product.stock} /></div>

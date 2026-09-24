@@ -7,8 +7,8 @@ import { Topbar } from '@/design-system/organisms';
 import { CenteredMessage, PageLayout } from '@/design-system/templates';
 import { formatRelativeDate } from '@/shared/utils/format';
 import { getStockLevel } from '../constants/stock';
-import { useCreateProduct, useDeleteProduct, useProducts, useUpdateProduct } from '../hooks/useCatalog';
-import ProductForm from '../components/ProductForm';
+import { useCreateProduct, useDeleteProduct, useProducts, useUpdateProduct, useUploadProductImage } from '../hooks/useCatalog';
+import ProductEditorModal from '../components/ProductEditorModal';
 import ProductModal from '../components/ProductModal';
 import ProductGrid from '../components/ProductCard';
 import ProductList from '../components/ProductList';
@@ -22,6 +22,7 @@ export default function CatalogPage() {
   const productsQuery = useProducts();
   const createProduct = useCreateProduct();
   const deleteProduct = useDeleteProduct();
+  const uploadProductImage = useUploadProductImage();
   const updateProduct = useUpdateProduct();
 
   const [category, setCategory] = useState(ALL);
@@ -64,9 +65,16 @@ export default function CatalogPage() {
     updateProduct.reset();
     setMode('edit');
   }
-  async function handleCreate(payload) {
+  async function handleCreate({ imageFile, ...payload }) {
     try {
       const created = await createProduct.mutateAsync(payload);
+      if (imageFile && created?.id) {
+        try {
+          await uploadProductImage.mutateAsync({ id: created.id, file: imageFile });
+        } catch {
+          setActionError('El producto se creó, pero no pudimos cargar su imagen. Puedes intentarlo desde el detalle.');
+        }
+      }
       setMode('view');
       setCategory(ALL);
       setSelectedId(created?.id ?? null);
@@ -80,6 +88,16 @@ export default function CatalogPage() {
     } catch { /* idem */ }
   }
 
+  async function handleUploadImage(product, file) {
+    setActionError(null);
+    try {
+      await uploadProductImage.mutateAsync({ id: product.id, file });
+      setSelectedId(product.id);
+    } catch (error) {
+      setActionError(error.message);
+    }
+  }
+
   async function handleDelete(product) {
     if (!window.confirm(`¿Eliminar «${product.name}»? Esta acción no se puede deshacer.`)) return;
     setActionError(null);
@@ -89,35 +107,6 @@ export default function CatalogPage() {
     } catch (error) {
       setActionError(error.message);
     }
-  }
-
-  let panel;
-  if (mode === 'create') {
-    panel = (
-      <ProductForm
-        key="create"
-        product={null}
-        categories={categories}
-        submitting={createProduct.isPending}
-        error={createProduct.error?.message}
-        onSubmit={handleCreate}
-        onCancel={() => setMode('view')}
-      />
-    );
-  } else if (mode === 'edit' && selected) {
-    panel = (
-      <ProductForm
-        key={selected.id}
-        product={selected}
-        categories={categories}
-        submitting={updateProduct.isPending}
-        error={updateProduct.error?.message}
-        onSubmit={handleUpdate}
-        onCancel={() => setMode('view')}
-      />
-    );
-  } else {
-    panel = null;
   }
 
   const Body = view === 'grid' ? ProductGrid : ProductList;
@@ -138,8 +127,7 @@ export default function CatalogPage() {
           </Topbar>
         }
         filters={<FilterChips label="Filtrar por categoría" options={filterOptions} value={category} onChange={setCategory} />}
-        notice={actionError && <Notice variant="error">{actionError}</Notice>}
-        panel={panel}
+        notice={actionError && mode === 'view' && <Notice variant="error">{actionError}</Notice>}
       >
         {productsQuery.isLoading ? (
           <CenteredMessage title="Cargando catálogo…" />
@@ -157,10 +145,23 @@ export default function CatalogPage() {
           product={selected}
           canEdit={can('catalog', 'update')}
           canDelete={can('catalog', 'delete')}
+          uploadingImage={uploadProductImage.isPending}
+          uploadError={actionError}
           onClose={() => setSelectedId(null)}
           onAdd={addItem}
           onEdit={openEdit}
           onDelete={handleDelete}
+          onUploadImage={handleUploadImage}
+        />
+      )}
+      {(mode === 'create' || (mode === 'edit' && selected)) && (
+        <ProductEditorModal
+          product={mode === 'edit' ? selected : null}
+          categories={categories}
+          submitting={mode === 'create' ? createProduct.isPending || uploadProductImage.isPending : updateProduct.isPending}
+          error={mode === 'create' ? createProduct.error?.message || uploadProductImage.error?.message : updateProduct.error?.message}
+          onSubmit={mode === 'create' ? handleCreate : handleUpdate}
+          onClose={() => setMode('view')}
         />
       )}
     </>

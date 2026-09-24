@@ -33,6 +33,28 @@ export function useUpdateProduct() {
   });
 }
 
+export function useUploadProductImage() {
+  const api = useCatalogApi();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, file }) => {
+      const upload = await api.requestImageUpload(id, {
+        fileName: file.name,
+        contentType: file.type,
+        fileSize: file.size,
+      });
+      const response = await fetch(upload.uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+      if (!response.ok) throw new Error('No se pudo subir la imagen. Inténtalo nuevamente.');
+      return api.update(id, { imageKey: upload.imageKey });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: CATALOG_KEY }),
+  });
+}
+
 export function useDeleteProduct() {
   const api = useCatalogApi();
   const queryClient = useQueryClient();

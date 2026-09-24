@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Button, Input, Textarea } from '@/design-system/atoms';
+import { useEffect, useState } from 'react';
+import { Input, ProductImage, Textarea } from '@/design-system/atoms';
 import { Field, Notice } from '@/design-system/molecules';
-import { DetailPanel } from '@/design-system/organisms';
 import styles from './ProductForm.module.css';
+import { validateProductImage } from '../constants/images';
 
 // Alta (product = null) y edición de producto. Solo admin (lo controla la página).
 export default function ProductForm({ product, categories, submitting, error, onSubmit, onCancel }) {
@@ -15,8 +15,25 @@ export default function ProductForm({ product, categories, submitting, error, on
     category: product?.category ?? '',
   });
   const [validation, setValidation] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(product?.imageUrl ?? null);
+
+  useEffect(() => () => imagePreview?.startsWith('blob:') && URL.revokeObjectURL(imagePreview), [imagePreview]);
 
   const set = (field) => (event) => setValues((v) => ({ ...v, [field]: event.target.value }));
+
+  function handleImageChange(event) {
+    const file = event.target.files?.[0] ?? null;
+    const imageError = validateProductImage(file);
+    if (imageError) {
+      setValidation(imageError);
+      event.target.value = '';
+      return;
+    }
+    setValidation(null);
+    setImageFile(file);
+    setImagePreview(file ? URL.createObjectURL(file) : product?.imageUrl ?? null);
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -34,23 +51,11 @@ export default function ProductForm({ product, categories, submitting, error, on
     // En la edición se envían siempre (permite vaciarlos); en el alta solo si tienen valor.
     if (editing || description) payload.description = description;
     if (editing || category) payload.category = category;
+    if (imageFile) payload.imageFile = imageFile;
     onSubmit(payload);
   }
 
   return (
-    <DetailPanel
-      title={editing ? 'Editar producto' : 'Nuevo producto'}
-      subtitle={editing ? product.id : undefined}
-      onClose={onCancel}
-      footer={
-        <>
-          <Button variant="primary" block type="submit" form="product-form" disabled={submitting}>
-            {submitting ? 'Guardando…' : 'Guardar cambios'}
-          </Button>
-          <Button variant="ghost" onClick={onCancel} disabled={submitting}>Descartar</Button>
-        </>
-      }
-    >
       <form id="product-form" className={styles.form} onSubmit={handleSubmit}>
         <Field label="Nombre">
           <Input value={values.name} onChange={set('name')} placeholder="Nombre del producto" />
@@ -73,9 +78,18 @@ export default function ProductForm({ product, categories, submitting, error, on
           </datalist>
         </Field>
 
+        {!editing && (
+          <Field label="Imagen del producto" hint="JPG, PNG, WEBP o GIF · máximo 5 MB">
+            <label className={styles.imagePicker}>
+              <ProductImage src={imagePreview} alt="Vista previa del producto" />
+              <span>{imageFile ? imageFile.name : 'Seleccionar imagen'}</span>
+              <Input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageChange} className={styles.fileInput} />
+            </label>
+          </Field>
+        )}
+
         {validation && <Notice variant="error">{validation}</Notice>}
         {error && <Notice variant="error">{error}</Notice>}
       </form>
-    </DetailPanel>
   );
 }

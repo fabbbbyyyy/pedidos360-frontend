@@ -1,2 +1,8 @@
 .form { display: flex; flex-direction: column; gap: 14px; }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.imagePicker { position: relative; display: grid; place-items: center; height: 150px; overflow: hidden; border: 1px dashed var(--line); border-radius: var(--r); background: var(--surface-lo); color: var(--accent-ink); cursor: pointer; }
+.imagePicker > img, .imagePicker > div { position: absolute; inset: 0; }
+.imagePicker::after { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255,255,255,.66); color: var(--accent-ink); content: ''; transition: background .15s; }
+.imagePicker:hover::after { background: rgba(255,255,255,.48); }
+.imagePicker span { position: relative; z-index: 1; padding: 8px 12px; border-radius: 999px; background: var(--surface); font-size: 12px; font-weight: 700; }
+.fileInput { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }

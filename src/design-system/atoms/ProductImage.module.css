@@ -1,0 +1,2 @@
+.image, .placeholder { display: block; width: 100%; height: 100%; object-fit: cover; }
+.placeholder { background: linear-gradient(135deg, #dff5eb, #eef6f2 55%, #d7ece5); }
