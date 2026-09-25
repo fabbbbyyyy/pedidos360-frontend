@@ -10,11 +10,9 @@ export function ProductCard({ product, selected, onSelect }) {
       <div className={styles.top}>
         <ProductImage src={product.imageUrl} alt="" className={styles.cardImage} />
         <div className={styles.cardOverlay} />
-        <div className={styles.topContent}>
-        <span className={styles.name}>{product.name}</span>
-        <span className={styles.cat}>{product.category || '—'}</span>
-        </div>
+        <span className={styles.topContent}>{product.category || '—'}</span>
       </div>
+      <h3 className={styles.name}>{product.name}</h3>
       <p className={styles.desc}>{product.description}</p>
       <div className={styles.bottom}>
         <span className={styles.price}>{formatCLP(product.price)}</span>

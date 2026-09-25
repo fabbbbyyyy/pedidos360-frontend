@@ -1,7 +1,19 @@
-.gate { height: 100%; display: grid; place-items: center; padding: 32px; background: var(--bg); }
-.card { width: 100%; max-width: 340px; }
-.logo { margin-bottom: 22px; }
-.card h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: -0.025em; }
-.lead { margin: 0 0 26px; font-size: 13px; color: var(--text-3); line-height: 1.6; }
-.foot { margin-top: 18px; font-size: 11px; color: var(--text-3); line-height: 1.6; }
+.gate { min-height: 100%; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); background: var(--bg); }
+.card { display: grid; align-content: center; width: min(100%, 420px); padding: 48px clamp(28px, 6vw, 88px); }
+.gate::before { content: ''; display: block; grid-row: 1; grid-column: 1; height: 100%; background: var(--accent-ink); clip-path: polygon(0 0, 88% 0, 100% 100%, 0 100%); }
+.context { position: relative; grid-column: 1; grid-row: 1; align-self: center; display: grid; gap: 14px; max-width: 28ch; margin: 0 clamp(28px, 6vw, 88px); color: var(--surface); }
+.context strong { font-size: clamp(32px, 4vw, 58px); line-height: 1.02; letter-spacing: -.045em; }
+.context span { max-width: 24ch; color: var(--accent-soft); font-size: 14px; line-height: 1.55; }
+.card { grid-column: 2; grid-row: 1; }
+.card::before { content: 'Acceso'; display: block; margin-bottom: 18px; color: var(--accent-ink); font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.card h1 { margin: 0 0 10px; font-size: clamp(30px, 4vw, 46px); font-weight: 650; letter-spacing: -.04em; line-height: 1.05; }
+.lead { margin: 0 0 28px; max-width: 38ch; font-size: 14px; color: var(--text-2); line-height: 1.65; }
+.foot { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12px; color: var(--text-3); line-height: 1.6; }
 .foot code { font-family: var(--mono); font-size: 10.5px; color: var(--text-2); }
+
+@media (max-width: 700px) {
+	.gate { display: block; }
+	.gate::before { height: 150px; clip-path: polygon(0 0, 100% 0, 100% 72%, 0 100%); }
+	.context { display: none; }
+	.card { width: 100%; padding: 0 28px 32px; }
+}

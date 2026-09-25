@@ -12,7 +12,7 @@ export function PageLayout({ header, filters, notice, panel, children }) {
         <div className={styles.col}>
           <div className={styles.scroll}>{children}</div>
         </div>
-        {panel}
+          {panel && <aside className={styles.panel}>{panel}</aside>}
       </div>
     </section>
   );

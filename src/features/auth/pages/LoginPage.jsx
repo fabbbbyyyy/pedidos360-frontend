@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { InteractionStatus } from '@azure/msal-browser';
 import { loginRequest } from '@/core/auth/authConfig';
-import { Button } from '@/design-system/atoms';
+import { Button, IconMicrosoft } from '@/design-system/atoms';
 import { Notice } from '@/design-system/molecules';
 import { AuthGateLayout } from '@/design-system/templates';
 
@@ -28,19 +28,20 @@ export default function LoginPage() {
 
   return (
     <AuthGateLayout
-      title="Pedidos360"
-      lead="Accede con tu cuenta corporativa para consultar el catálogo, preparar pedidos y hacer seguimiento de tus compras."
+      title="Inicia sesión"
+      lead="Usa tu cuenta de la empresa para consultar el catálogo, crear pedidos y seguir su estado."
       action={
         <>
           <Button variant="primary" block onClick={handleLogin} disabled={inProgress !== InteractionStatus.None}>
-            Entrar con la cuenta de la empresa
+            <IconMicrosoft />
+            Iniciar sesión
           </Button>
           {error && <div style={{ marginTop: 12 }}><Notice variant="error">{error}</Notice></div>}
         </>
       }
       footer={
         <>
-          ¿No puedes entrar? Contacta a soporte interno para revisar el acceso de tu cuenta.
+          ¿Tienes problemas para acceder? Contacta a soporte interno.
         </>
       }
     />

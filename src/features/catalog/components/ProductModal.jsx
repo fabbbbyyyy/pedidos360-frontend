@@ -13,8 +13,17 @@ export default function ProductModal({ product, canEdit, canDelete, uploadingIma
   const dialogRef = useDialogA11y({ onClose, disabled: uploadingImage });
   const [quantity, setQuantity] = useState(1);
   const [imageError, setImageError] = useState(null);
+  const [zoomPoint, setZoomPoint] = useState(null);
   const level = getStockLevel(product.stock);
   const unavailable = level === 'out';
+
+  function handleImageMove(event) {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    setZoomPoint({
+      x: ((event.clientX - bounds.left) / bounds.width) * 100,
+      y: ((event.clientY - bounds.top) / bounds.height) * 100,
+    });
+  }
 
   function addToCart() {
     onAdd(product, quantity);
@@ -38,16 +47,22 @@ export default function ProductModal({ product, canEdit, canDelete, uploadingIma
     <div className={styles.backdrop} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <section ref={dialogRef} tabIndex="-1" className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
         <button type="button" className={styles.close} onClick={onClose} aria-label="Cerrar detalle"><IconClose /></button>
-        <div className={styles.hero}>
-          <ProductImage src={product.imageUrl} alt="" className={styles.heroImage} />
-          <div className={styles.heroOverlay} />
+        <div className={styles.visual}>
+          <div
+            className={`${styles.hero} ${zoomPoint ? styles.zoomed : ''}`}
+            style={zoomPoint ? { '--zoom-x': `${zoomPoint.x}%`, '--zoom-y': `${zoomPoint.y}%` } : undefined}
+            onMouseMove={handleImageMove}
+            onMouseLeave={() => setZoomPoint(null)}
+          >
+            <ProductImage src={product.imageUrl} alt="" className={styles.heroImage} />
+          </div>
           <div className={styles.heroContent}>
-          <span className={styles.category}>{product.category || 'Producto'}</span>
-          <h2 id="product-modal-title">{product.name}</h2>
-          <p>{product.description || 'Un producto listo para formar parte de tu próximo pedido.'}</p>
+            <span className={styles.category}>{product.category || 'Producto'}</span>
+            <h2 id="product-modal-title">{product.name}</h2>
           </div>
         </div>
         <div className={styles.content}>
+          <p className={styles.description}>{product.description || 'Un producto listo para formar parte de tu próximo pedido.'}</p>
           <FactsList items={[{ label: 'Precio unitario', value: formatCLP(product.price), mono: true }, { label: 'Disponibilidad', value: STOCK_LABEL[level], color: level === 'ok' ? 'var(--green)' : 'var(--brass)' }]} />
           <div className={styles.purchase}>
             <div>

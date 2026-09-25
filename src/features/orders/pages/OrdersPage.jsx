@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSession } from '@/core/auth/SessionProvider';
 import { Button, IconRefresh } from '@/design-system/atoms';
-import { FilterChips, SearchInput } from '@/design-system/molecules';
+import { FilterSelect, SearchInput } from '@/design-system/molecules';
 import { ConfirmDialog, Topbar } from '@/design-system/organisms';
 import { CenteredMessage, PageLayout } from '@/design-system/templates';
 import { formatRelativeDate } from '@/shared/utils/format';
@@ -99,16 +99,17 @@ export default function OrdersPage() {
   const updatedAt = ordersQuery.dataUpdatedAt ? new Date(ordersQuery.dataUpdatedAt).toISOString() : null;
 
   return (
-    <PageLayout
+    <>
+      <PageLayout
       header={
         <Topbar title="Pedidos" subtitle={updatedAt ? `Actualizado ${formatRelativeDate(updatedAt)}` : 'Cargando…'}>
           <SearchInput placeholder="Buscar por cliente o ID" value={query} onChange={setQuery} />
+          <FilterSelect compact label="Estado del pedido" options={filterOptions} value={filter} onChange={setFilter} />
           <Button onClick={() => ordersQuery.refetch()} disabled={ordersQuery.isFetching} aria-label="Actualizar">
             <IconRefresh />
           </Button>
         </Topbar>
       }
-      filters={<FilterChips label="Filtrar por estado" options={filterOptions} value={filter} onChange={setFilter} />}
     >
       {ordersQuery.isLoading ? (
         <CenteredMessage title="Cargando pedidos…" />
@@ -129,8 +130,9 @@ export default function OrdersPage() {
           )}
         </>
       )}
-      {selectedOrder && <OrderModal order={selectedOrder} productsById={productsById} user={user} actions={getOrderActions(selectedOrder.status, session)} busy={busy || selectedDetailQuery.isFetching} error={actionError} onClose={() => { setSelectedId(null); setActionError(null); }} onAdvance={handleAdvance} onCancel={handleCancel} />}
       {confirmation && <ConfirmDialog title={confirmation.title} message={confirmation.message} confirmLabel={confirmation.confirmLabel} danger busy={deleteOrder.isPending} onClose={() => setConfirmation(null)} onConfirm={confirmCancel} />}
-    </PageLayout>
+      </PageLayout>
+      {selectedOrder && <OrderModal order={selectedOrder} productsById={productsById} user={user} actions={getOrderActions(selectedOrder.status, session)} busy={busy || selectedDetailQuery.isFetching} error={actionError} onClose={() => { setSelectedId(null); setActionError(null); }} onAdvance={handleAdvance} onCancel={handleCancel} />}
+    </>
   );
 }

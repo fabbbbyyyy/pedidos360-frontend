@@ -1,6 +1,7 @@
 .view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .notice { padding: 14px 30px 0; }
 .body { flex: 1; min-height: 0; display: flex; }
+.panel { flex: 0 0 var(--panel-w); min-width: 0; min-height: 0; border-left: 1px solid var(--line); background: var(--surface); }
 .col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .scroll { flex: 1; min-height: 0; overflow: auto; }
 
@@ -8,4 +9,5 @@
   .view { min-height: auto; }
   .body { flex-direction: column; flex: none; }
   .scroll { max-height: 60vh; }
+  .panel { flex-basis: auto; border-top: 1px solid var(--line); border-left: 0; }
 }

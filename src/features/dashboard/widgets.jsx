@@ -26,7 +26,7 @@ function OrdersOverview() {
   if (ordersQuery.isError) return <div className={styles.widgetError}>No pudimos cargar los indicadores de pedidos.</div>;
 
   return (
-    <section className={styles.widget} aria-labelledby="orders-overview-title">
+    <section className={`${styles.widget} ${styles.leadWidget}`} aria-labelledby="orders-overview-title">
       <div className={styles.widgetHeader}><div><span className={styles.eyebrow}>Operación</span><h2 id="orders-overview-title">Pedidos</h2></div><Link to="/orders">Ver todos</Link></div>
       <div className={styles.metrics}>
         <Metric label="Activos" value={active.length} hint="En proceso" />
@@ -46,7 +46,7 @@ function CatalogOverview() {
   if (productsQuery.isError) return <div className={styles.widgetError}>No pudimos cargar los indicadores del catálogo.</div>;
 
   return (
-    <section className={styles.widget} aria-labelledby="catalog-overview-title">
+    <section className={`${styles.widget} ${styles.supportWidget}`} aria-labelledby="catalog-overview-title">
       <div className={styles.widgetHeader}><div><span className={styles.eyebrow}>Inventario</span><h2 id="catalog-overview-title">Catálogo</h2></div><Link to="/catalog">Abrir catálogo</Link></div>
       <div className={styles.metrics}>
         <Metric label="Productos" value={products.length} hint="En catálogo" to="/catalog" />

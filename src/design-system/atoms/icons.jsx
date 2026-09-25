@@ -53,3 +53,11 @@ export const IconList = createIcon('IconList', <path d="M5.5 4h8M5.5 8h8M5.5 12h
 export const IconCart = createIcon('IconCart', <><path d="M2.5 3h1.2l1.1 7.2a1 1 0 0 0 1 .8h5.8a1 1 0 0 0 1-.8L13.5 5H4.2" /><circle cx="6.5" cy="13" r=".8" /><circle cx="11.5" cy="13" r=".8" /></>);
 export const IconMinus = createIcon('IconMinus', <path d="M3 8h10" />, 1.5);
 export const IconTrash = createIcon('IconTrash', <><path d="M3.5 4.5h9M6 4.5V3h4v1.5M5 6.5v5.5M8 6.5v5.5M11 6.5v5.5M4 4.5l.6 9h6.8l.6-9" /></>);
+
+export function IconMicrosoft(props) {
+  return (
+    <svg className={styles.ico} viewBox="0 0 16 16" aria-hidden="true" {...props}>
+      <path fill="currentColor" d="M1.5 1.5h6v6h-6zM8.5 1.5h6v6h-6zM1.5 8.5h6v6h-6zM8.5 8.5h6v6h-6z" />
+    </svg>
+  );
+}

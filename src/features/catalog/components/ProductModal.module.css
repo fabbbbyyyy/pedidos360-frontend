@@ -1,17 +1,18 @@
 .backdrop { position: fixed; inset: 0; z-index: 25; display: grid; place-items: center; padding: 24px; background: rgba(5, 10, 11, .68); animation: fadeIn .2s ease-out; }
-.modal { position: relative; width: min(520px, 100%); overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: 0 24px 80px rgba(0, 0, 0, .45); animation: riseIn .26s cubic-bezier(.2, .8, .2, 1); }
+.modal { position: relative; width: min(880px, 100%); max-height: min(760px, calc(100vh - 48px)); display: grid; grid-template-columns: minmax(300px, .95fr) minmax(360px, 1.05fr); overflow: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: 0 24px 80px rgba(0, 0, 0, .45); animation: riseIn .26s cubic-bezier(.2, .8, .2, 1); }
 .close { position: absolute; top: 18px; right: 18px; z-index: 1; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; color: var(--text-2); }
 .close:hover { background: var(--surface-hi); color: var(--text); }
 .close svg { width: 19px; height: 19px; }
-.hero { position: relative; min-height: 245px; overflow: hidden; padding: 38px 76px 30px 32px; background: linear-gradient(135deg, #243b3d, var(--surface)); }
-.heroImage, .heroOverlay { position: absolute; inset: 0; }
-.heroImage { opacity: .9; }
-.heroOverlay { background: linear-gradient(180deg, transparent 28%, rgba(10, 31, 26, .78) 100%); }
-.heroContent { position: relative; z-index: 1; max-width: 390px; }
-.category { display: inline-block; padding: 5px 9px; border-radius: 999px; background: var(--brass); color: #16382e; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-.hero h2 { margin-top: 10px; color: #fff; font-size: 32px; line-height: 1.1; letter-spacing: -.035em; }
-.hero p { margin-top: 12px; color: rgba(255, 255, 255, .84); font-size: 15px; line-height: 1.6; }
-.content { display: grid; gap: 24px; padding: 28px 32px 32px; }
+.visual { min-width: 0; background: var(--surface-lo); border-right: 1px solid var(--line-soft); }
+.hero { position: relative; min-height: 360px; overflow: hidden; background: var(--surface-lo); }
+.heroImage { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; transition: transform .18s ease-out; }
+.heroImage { opacity: 1; }
+.zoomed .heroImage { transform: scale(2); transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%); cursor: zoom-out; }
+.heroContent { max-width: 390px; padding: 24px 28px 30px; }
+.category { display: inline-block; color: var(--accent-ink); font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.hero h2 { margin-top: 8px; color: var(--text); font-size: 32px; line-height: 1.1; letter-spacing: -.035em; }
+.content { display: grid; align-content: start; gap: 24px; padding: 76px 32px 32px; }
+.description { margin: 0; color: var(--text-2); font-size: 15px; line-height: 1.6; }
 .purchase { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-top: 20px; border-top: 1px solid var(--line-soft); }
 .purchaseLabel { display: block; margin-bottom: 10px; color: var(--text-3); font-size: 12px; }
 .stepper { display: flex; align-items: center; gap: 14px; width: max-content; padding: 4px; border: 1px solid var(--line); border-radius: 999px; }
@@ -28,4 +29,12 @@
 .uploadError { padding: 10px 12px; border: 1px solid #edc5c3; border-radius: var(--r); background: #fff5f4; color: var(--brick); font-size: 12px; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes riseIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-@media (max-width: 520px) { .backdrop { padding: 14px; } .hero { padding: 32px 58px 24px 24px; } .hero h2 { font-size: 27px; } .content { padding: 24px; } }
+@media (max-width: 700px) {
+	.backdrop { padding: 12px; }
+	.modal { max-height: calc(100vh - 24px); grid-template-columns: 1fr; }
+	.visual { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+	.hero { min-height: 240px; }
+	.heroContent { padding: 20px 24px 24px; }
+	.hero h2 { font-size: 27px; }
+	.content { padding: 28px 24px 24px; }
+}

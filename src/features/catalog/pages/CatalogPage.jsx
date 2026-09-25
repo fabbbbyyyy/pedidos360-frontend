@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useSession } from '@/core/auth/SessionProvider';
 import { useCart } from '@/core/cart/CartProvider';
 import { Button, Chip, IconGrid, IconList, IconPlus, IconRefresh } from '@/design-system/atoms';
-import { FilterChips, Notice, SearchInput } from '@/design-system/molecules';
+import { FilterSelect, Notice, SearchInput } from '@/design-system/molecules';
 import { ConfirmDialog, Topbar } from '@/design-system/organisms';
 import { CenteredMessage, PageLayout } from '@/design-system/templates';
 import { formatRelativeDate } from '@/shared/utils/format';
@@ -12,6 +12,7 @@ import ProductEditorModal from '../components/ProductEditorModal';
 import ProductModal from '../components/ProductModal';
 import ProductGrid from '../components/ProductCard';
 import ProductList from '../components/ProductList';
+import styles from './CatalogPage.module.css';
 
 const ALL = 'ALL';
 const LOW = 'LOW';
@@ -125,6 +126,7 @@ export default function CatalogPage() {
         header={
           <Topbar title="Catálogo" subtitle={`${products.length} productos · ${lowCount} con stock bajo${updatedAt ? ` · actualizado ${formatRelativeDate(updatedAt)}` : ''}`}>
             <SearchInput placeholder="Buscar producto" value={query} onChange={setQuery} />
+            <FilterSelect compact label="Categoría" options={filterOptions} value={category} onChange={setCategory} />
             <div role="group" aria-label="Vista">
               <Chip pressed={view === 'list'} onClick={() => setView('list')}><IconList /> Lista</Chip>
               <Chip pressed={view === 'grid'} onClick={() => setView('grid')}><IconGrid /> Grilla</Chip>
@@ -133,7 +135,7 @@ export default function CatalogPage() {
             {can('catalog', 'create') && <Button variant="primary" onClick={openCreate}><IconPlus /> Nuevo producto</Button>}
           </Topbar>
         }
-        filters={<FilterChips label="Filtrar por categoría" options={filterOptions} value={category} onChange={setCategory} />}
+        filters={null}
         notice={actionError && mode === 'view' && <Notice variant="error">{actionError}</Notice>}
       >
         {productsQuery.isLoading ? (
@@ -144,7 +146,9 @@ export default function CatalogPage() {
             <Button onClick={() => productsQuery.refetch()}>Reintentar</Button>
           </CenteredMessage>
         ) : (
-          <Body products={filtered} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setMode('view'); }} />
+          <div className={styles.catalogCanvas}>
+            <Body products={filtered} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setMode('view'); }} />
+          </div>
         )}
       </PageLayout>
       {selected && mode === 'view' && (
