@@ -15,6 +15,6 @@ export function useAnalytics() {
     queryKey: [...ANALYTICS_KEY, account.homeAccountId],
     queryFn: api.get,
     staleTime: 15_000,
-    refetchInterval: 30_000,
+    refetchInterval: 5_000,
   });
 }
