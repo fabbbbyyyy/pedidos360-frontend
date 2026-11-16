@@ -10,7 +10,7 @@ const ROLE_HINTS = {
   [ROLES.ADMIN]: 'Gestiona el catálogo y supervisa todos los pedidos.',
   [ROLES.OPERADOR]: 'Da seguimiento a los pedidos: confirma, envía y entrega.',
   [ROLES.CLIENTE]: 'Crea pedidos y sigue el estado de los tuyos.',
-  [ROLES.AUDITOR]: 'Tu rol es de consulta. Por ahora no tiene módulos habilitados.',
+  [ROLES.AUDITOR]: 'Consulta las métricas de analytics y supervisa la operación.',
 };
 
 const ROLE_LABELS = {

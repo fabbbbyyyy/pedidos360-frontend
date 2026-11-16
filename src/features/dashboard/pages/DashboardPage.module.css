@@ -17,6 +17,10 @@
 .metric small { color: var(--text-3); font-size: 11px; }
 .widgetLoading, .widgetError { min-height: 146px; display: grid; place-items: center; padding: 18px; border: 1px dashed var(--line); border-radius: var(--r); color: var(--text-2); font-size: 13px; }
 .widgetError { color: var(--brick); }
+.analyticsWidget { grid-column: 1 / -1; }
+.statusList { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; color: var(--text-2); font-size: 12px; }
+.statusList span { display: inline-flex; gap: 6px; padding: 6px 9px; background: var(--surface-lo); border: 1px solid var(--line); }
+.statusList strong { color: var(--text); }
 
 @media (max-width: 700px) {
 	.content { padding: 24px 16px 32px; }

@@ -15,4 +15,7 @@ export const PERMISSIONS = {
     updateStatus: [ROLES.ADMIN, ROLES.OPERADOR, ROLES.CLIENTE],
     delete: [ROLES.ADMIN, ROLES.OPERADOR, ROLES.CLIENTE],
   },
+  analytics: {
+    read: [ROLES.ADMIN, ROLES.AUDITOR, ROLES.OPERADOR],
+  },
 };
